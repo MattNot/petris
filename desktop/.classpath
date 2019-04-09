@@ -7,7 +7,7 @@
     </attributes>
   </classpathentry>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6/"/>
-  <classpathentry kind="src" path="/Tetris-core"/>
+  <classpathentry kind="src" path="/Petris-core"/>
   <classpathentry sourcepath="/home/matteo/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-lwjgl/1.9.9/222a6367453012e0da3caa48b892b5c8ecc42dc/gdx-backend-lwjgl-1.9.9-sources.jar" kind="lib" path="/home/matteo/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-lwjgl/1.9.9/ca8911cb94c0bfeb59f99e46ca9b92440958fb0e/gdx-backend-lwjgl-1.9.9.jar">
     <attributes>
       <attribute name="gradle_used_by_scope" value="main,test"/>
