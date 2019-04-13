@@ -9,6 +9,7 @@ public abstract class Piece {
 	private int state;
 	protected Rectangle [] blocks;
 	private Color c;
+
 	public Piece() {
 		blocks = new Rectangle[4];
 	}

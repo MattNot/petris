@@ -20,23 +20,23 @@ public class PieceI extends Piece {
 
 	@Override
 	public void rotate() {
-		if(getState() == 0) {
-			blocks[1].setX(blocks[0].getX()-Piece.BLOCK_HEIGHT);
-			blocks[1].setY(blocks[0].getY());
-			blocks[2].setX(blocks[1].getX()-Piece.BLOCK_HEIGHT);
-			blocks[2].setY(blocks[0].getY());
-			blocks[3].setX(blocks[2].getX()-Piece.BLOCK_HEIGHT);
-			blocks[3].setY(blocks[0].getY());
-			setState(1);
+		if(this.getState() == 0) {
+			blocks[0].setX(blocks[0].getX()+2*Piece.BLOCK_HEIGHT);
+			blocks[0].setY(blocks[0].getY()+Piece.BLOCK_HEIGHT);
+			blocks[1].setX(blocks[1].getX()+Piece.BLOCK_HEIGHT);
+			blocks[2].setY(blocks[2].getY()-Piece.BLOCK_HEIGHT);
+			blocks[3].setY(blocks[3].getY()-2*Piece.BLOCK_HEIGHT);
+			blocks[3].setX(blocks[3].getX()-Piece.BLOCK_HEIGHT);
+			this.setState(1);
 		}
-		else {
-			blocks[1].setX(blocks[0].getX());
-			blocks[1].setY(blocks[0].getY()+Piece.BLOCK_HEIGHT);
-			blocks[2].setX(blocks[0].getX());
-			blocks[2].setY(blocks[1].getY()+Piece.BLOCK_HEIGHT);
-			blocks[3].setX(blocks[0].getX());
-			blocks[3].setY(blocks[2].getY()+Piece.BLOCK_HEIGHT);
-			setState(0);
+		else if(this.getState() == 1){
+			blocks[0].setX(blocks[0].getX()-2*Piece.BLOCK_HEIGHT);
+			blocks[0].setY(blocks[0].getY()-Piece.BLOCK_HEIGHT);
+			blocks[1].setX(blocks[1].getX()-Piece.BLOCK_HEIGHT);
+			blocks[2].setY(blocks[2].getY()+Piece.BLOCK_HEIGHT);
+			blocks[3].setY(blocks[3].getY()+2*Piece.BLOCK_HEIGHT);
+			blocks[3].setX(blocks[3].getX()+Piece.BLOCK_HEIGHT);
+			this.setState(0);
 		}
 	}
 

@@ -15,7 +15,9 @@ import com.petris.pieces.Piece;
 import com.petris.pieces.PieceI;
 import com.petris.pieces.PieceL;
 import com.petris.pieces.PieceS;
-import com.petris.pieces.PieceZ;
+import com.petris.pieces.PieceZLeft;
+import com.petris.pieces.PieceZRight;
+import com.petris.pieces.PieceT;;
 
 public class Petris extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -28,7 +30,7 @@ public class Petris extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(800,600);
 		sh = new ShapeRenderer();
-		l = new PieceS(Color.BLUE);
+		l = new PieceI(Color.BLUE);
 		camera.setToOrtho(true, 800, 600);
 		sh.setProjectionMatrix(camera.combined);
 	}
