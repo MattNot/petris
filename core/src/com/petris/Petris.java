@@ -13,7 +13,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.petris.pieces.Piece;
 import com.petris.pieces.PieceI;
-import com.petris.pieces.PieceL;
+import com.petris.pieces.PieceLRight;
+import com.petris.pieces.PieceLLeft;
 import com.petris.pieces.PieceS;
 import com.petris.pieces.PieceZLeft;
 import com.petris.pieces.PieceZRight;
@@ -30,7 +31,7 @@ public class Petris extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera(800,600);
 		sh = new ShapeRenderer();
-		l = new PieceI(Color.BLUE);
+		l = new PieceLLeft(Color.BLUE);
 		camera.setToOrtho(true, 800, 600);
 		sh.setProjectionMatrix(camera.combined);
 	}

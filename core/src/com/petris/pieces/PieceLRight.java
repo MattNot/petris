@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class PieceL extends Piece{
+public class PieceLRight extends Piece{
 	@Override
 	protected boolean canRotate(Vector2[] v) {
 		return false;
@@ -48,7 +48,7 @@ public class PieceL extends Piece{
 			this.setState(0);
 		}
 	}
-	public PieceL(Color c) {
+	public PieceLRight(Color c) {
 		super(c);
 		blocks[0] = new Rectangle(800/2, 0, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
 		blocks[1] = new Rectangle(800/2, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
