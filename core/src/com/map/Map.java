@@ -58,8 +58,13 @@ public class Map {
 		Block temp[][] = new Block[20][10];
 		for(int i = map.length - 1; i > riga; --i)
 			temp[i] = map[i].clone();
-		for(int i = riga - 1; i >= 0; --i)
+		for(int i = riga - 1; i >= 0; --i) {
 			temp[i + 1] = map[i].clone();
+			for(Block k : temp[i+1]) {
+				if(k!=null)
+					k.y += Piece.BLOCK_HEIGHT;
+			}
+		}
 		map = temp;
 	}
 	
