@@ -50,6 +50,7 @@ public class Petris extends ApplicationAdapter {
 		 * il polimorfismo dei metodi. Una volta posato "buttarlo via" mettendo i suoi Rectangle dentro un 
 		 * ArrayList di coppie <Rectangle, Color>.
 		 */
+		map.petrisControl();
 		if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
 			actual.move(Gdx.graphics.getDeltaTime()*4);
 		else

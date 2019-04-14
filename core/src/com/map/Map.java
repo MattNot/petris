@@ -54,6 +54,28 @@ public class Map {
 		}
 	}
 	
+	private void deleteRow(int riga) {
+		Block temp[][] = new Block[20][10];
+		for(int i = map.length - 1; i > riga; --i)
+			temp[i] = map[i].clone();
+		for(int i = riga - 1; i >= 0; --i)
+			temp[i + 1] = map[i].clone();
+		map = temp;
+	}
+	
+	public void petrisControl() {
+		for(int i = 0; i < map.length; ++i) {
+			boolean petris = true;
+			for(int j = 0; j < map[i].length; ++j)
+				if(map[i][j] == null) {
+					petris = false;
+					break;
+				}
+			if(petris)
+				deleteRow(i--);
+		}
+	}
+	
 	public Rectangle[] getBorders() {
 		return borders;
 	}
