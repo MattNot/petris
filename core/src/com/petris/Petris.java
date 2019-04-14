@@ -29,6 +29,7 @@ public class Petris extends ApplicationAdapter {
 	Texture img;
 	Piece actual;
 	Map map;
+	float delay;
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -38,6 +39,7 @@ public class Petris extends ApplicationAdapter {
 		camera.setToOrtho(true, 800, 600);
 		sh.setProjectionMatrix(camera.combined);
 		map = new Map();
+		delay = 0;
 		//Ci serve un playground di 400*200 i 90 e 10 sono per fare vedere meglio i bordi
 	}
 
@@ -51,19 +53,24 @@ public class Petris extends ApplicationAdapter {
 		 * ArrayList di coppie <Rectangle, Color>.
 		 */
 		map.petrisControl();
-		if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-			actual.move(Gdx.graphics.getDeltaTime()*4);
-		else
-			actual.move(Gdx.graphics.getDeltaTime()*3);
+		delay += Gdx.graphics.getDeltaTime();
+		if(delay > 0.45f) {
+			actual.move();
+			delay = 0;
+		}
 		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && map.leftCollision(actual))
-			actual.moveLeft(Gdx.graphics.getDeltaTime());
+			actual.moveLeft();
 		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && map.rightCollision(actual))
-			actual.moveRight(Gdx.graphics.getDeltaTime());
+			actual.moveRight();
 		if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
 			actual.rotate(); //E' così nel gioco originale
+		
 		if(map.isAtTheEnd(actual)) {
 			map.addPiece(actual);
 			createPiece();
+		}else {
+			if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
+				actual.move();
 		}
 		//Pezzo attuale
 		sh.begin(ShapeType.Filled);

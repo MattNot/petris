@@ -33,17 +33,17 @@ public abstract class Piece {
 	 */
 	protected abstract boolean canRotate(Vector2[] v);
 	
-	public void move(float delta) {
+	public void move() {
 		for(Rectangle i : blocks)
-			i.y += BLOCK_HEIGHT * delta;
+			i.y += BLOCK_HEIGHT;
 	}
 	
-	public boolean moveRight(float delta) {
+	public boolean moveRight() {
 		for(Rectangle i : blocks)
 			i.x += BLOCK_HEIGHT;
 		return true;
 	}
-	public boolean moveLeft(float delta) {
+	public boolean moveLeft() {
 		for(Rectangle i : blocks)
 			i.x -= BLOCK_HEIGHT;
 		return true;

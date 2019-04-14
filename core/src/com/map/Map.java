@@ -16,41 +16,45 @@ public class Map {
 		map = new Block[20][10];
 	}
 	
-	public boolean leftCollision(Piece P) {
-		for(Rectangle i : P.getBlocks())
+	public boolean leftCollision(Piece p) {
+		for(Rectangle i : p.getBlocks()) {
 			if(i.getX() <= borders[0].getX() + Piece.BLOCK_HEIGHT)
 				return false;
-		/*for(Rectangle i : P.getBlocks())
 			if(map[(int)(i.getY())/Piece.BLOCK_HEIGHT][((int)(i.getX()-300)/Piece.BLOCK_HEIGHT)-1] != null)
-				return false;*/ //bisogna gestire le collisioni con altri blocchi. Teletrasporto?
+				return false;
+		}
 		return true;
 	}
 	
-	public boolean rightCollision(Piece P) {
-		for(Rectangle i : P.getBlocks())
+	public boolean rightCollision(Piece p){
+		for(Rectangle i : p.getBlocks()) {
 			if(i.getX() >= borders[1].getX() - Piece.BLOCK_HEIGHT)
 				return false;
+			if(map[(int)(i.getY())/Piece.BLOCK_HEIGHT][((int)(i.getX()-300)/Piece.BLOCK_HEIGHT)+1] != null)
+				return false;
+		}
 		return true;
 	}
 	
-	public boolean isAtTheEnd(Piece P) {
-		for(Rectangle i : P.getBlocks())
+	public boolean isAtTheEnd(Piece p) {
+		for(Rectangle i : p.getBlocks())
 		{
-			if(i.overlaps(borders[2]))
+			if(i.overlaps(borders[2]) || i.y >= 400-Piece.BLOCK_HEIGHT) {
 				return true;
+			}
 			for(int j = 0; j<map.length; j++)
 				for(int k=0; k<map[j].length; k++)
 					if(map[j][k] != null)
-						if(i.overlaps(map[j][k]))
+						if(i.y+Piece.BLOCK_HEIGHT == map[j][k].y && i.x == map[j][k].x )
 							return true;
 		}
 		return false;
 	}
 	
-	public void addPiece(Piece P) {
-		for(Rectangle i : P.getBlocks())
+	public void addPiece(Piece p) {
+		for(Rectangle i : p.getBlocks())
 		{
-			map[(int)(i.getY())/Piece.BLOCK_HEIGHT][(int)(i.getX()-300)/Piece.BLOCK_HEIGHT] = new Block(P.getC(),i);
+			map[(int)(i.getY())/Piece.BLOCK_HEIGHT][(int)(i.getX()-300)/Piece.BLOCK_HEIGHT] = new Block(p.getC(),i);
 		}
 	}
 	
