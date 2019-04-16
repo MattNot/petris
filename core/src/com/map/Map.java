@@ -2,6 +2,7 @@ package com.map;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.petris.pieces.Piece;
+import com.petris.pieces.PieceS;
 
 public class Map {
 	
@@ -16,27 +17,47 @@ public class Map {
 		map = new Block[20][10];
 	}
 	
-	public boolean leftCollision(Piece p) {
+	public boolean canRotate(Piece p) {
+		if(p instanceof PieceS)
+			return true;
+		int actualState = p.getState() - 1;
+		p.rotate();
+		while(true) {
+			if(!leftCollision(p) && !rightCollision(p))
+				return true;
+			if(leftCollision(p) && rightCollision(p))
+				break;
+			if(leftCollision(p) == true && !rightCollision(p))
+				p.moveRight();
+			if(!leftCollision(p) && rightCollision(p) == true)
+				p.moveLeft();
+		}
+		p.setState(actualState);
+		p.rotate();
+		return false;
+	}
+	
+	public boolean leftCollision(Piece p) {//se c'è una collisione restituisce true
 		for(Rectangle i : p.getBlocks()) {
 			if(i.getX() <= borders[0].getX() + Piece.BLOCK_HEIGHT)
-				return false;
-			if(map[(int)(i.getY())/Piece.BLOCK_HEIGHT][((int)(i.getX()-300)/Piece.BLOCK_HEIGHT)-1] != null)
-				return false;
+				return true;
+			if(i.getX() < 500 && map[(int)(i.getY())/Piece.BLOCK_HEIGHT][((int)(i.getX()-300)/Piece.BLOCK_HEIGHT)-1] != null)
+				return true;
 		}
-		return true;
+		return false;
 	}
 	
-	public boolean rightCollision(Piece p){
+	public boolean rightCollision(Piece p){//se c'è una collisione restituisce true
 		for(Rectangle i : p.getBlocks()) {
 			if(i.getX() >= borders[1].getX() - Piece.BLOCK_HEIGHT)
-				return false;
+				return true;
 			if(map[(int)(i.getY())/Piece.BLOCK_HEIGHT][((int)(i.getX()-300)/Piece.BLOCK_HEIGHT)+1] != null)
-				return false;
+				return true;
 		}
-		return true;
+		return false;
 	}
 	
-	public boolean isAtTheEnd(Piece p) {
+	public boolean isAtTheEnd(Piece p) {//se è alla fine restituisce true
 		for(Rectangle i : p.getBlocks())
 		{
 			if(i.overlaps(borders[2]) || i.y >= 400-Piece.BLOCK_HEIGHT) {
@@ -54,7 +75,7 @@ public class Map {
 	public void addPiece(Piece p) {
 		for(Rectangle i : p.getBlocks())
 		{
-			map[(int)(i.getY())/Piece.BLOCK_HEIGHT][(int)(i.getX()-300)/Piece.BLOCK_HEIGHT] = new Block(p.getC(),i);
+			map[(int)(i.getY())/Piece.BLOCK_HEIGHT][(int)(i.getX()-300)/Piece.BLOCK_HEIGHT] = new Block(p.getTexture(),i);
 		}
 	}
 	

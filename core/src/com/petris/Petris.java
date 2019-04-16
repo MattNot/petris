@@ -7,7 +7,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -26,7 +25,7 @@ public class Petris extends ApplicationAdapter {
 	SpriteBatch batch;
 	ShapeRenderer sh;
 	OrthographicCamera camera;
-	Texture img;
+	SpriteBatch sprite;
 	Piece actual;
 	Map map;
 	float delay;
@@ -36,7 +35,9 @@ public class Petris extends ApplicationAdapter {
 		camera = new OrthographicCamera(800,600);
 		sh = new ShapeRenderer();
 		createPiece();
+		sprite = new SpriteBatch();
 		camera.setToOrtho(true, 800, 600);
+		sprite.setProjectionMatrix(camera.combined);
 		sh.setProjectionMatrix(camera.combined);
 		map = new Map();
 		delay = 0;
@@ -58,12 +59,13 @@ public class Petris extends ApplicationAdapter {
 			actual.move();
 			delay = 0;
 		}
-		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && map.leftCollision(actual))
+		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && !map.leftCollision(actual))
 			actual.moveLeft();
-		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && map.rightCollision(actual))
+		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !map.rightCollision(actual))
 			actual.moveRight();
-		if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
-			actual.rotate(); //E' così nel gioco originale
+		if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+			map.canRotate(actual);
+		}
 		
 		if(map.isAtTheEnd(actual)) {
 			map.addPiece(actual);
@@ -78,30 +80,31 @@ public class Petris extends ApplicationAdapter {
 		sh.rect(map.getBorders()[0].getX(), map.getBorders()[0].getY(), map.getBorders()[0].getWidth(), map.getBorders()[0].getHeight());
 		sh.rect(map.getBorders()[1].getX(), map.getBorders()[1].getY(), map.getBorders()[1].getWidth(), map.getBorders()[1].getHeight());
 		sh.rect(map.getBorders()[2].getX(), map.getBorders()[2].getY(), map.getBorders()[2].getWidth(), map.getBorders()[2].getHeight());
+		sh.end();
+		sprite.begin();
 		//int i = 0;
 		for(Rectangle r : actual.getBlocks()) { 
 			//if(i!=0)
-				sh.setColor(actual.getC());
+				sprite.draw(actual.getTexture(), r.getX(), r.getY());
 			//else
 				//sh.setColor(Color.BLACK); //DEBUG TO LET US KNOW WHO IS THE FIRST BLOCK
 			//i++;
-			sh.rect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
 		}
-		sh.end();
-		
-		sh.begin(ShapeType.Filled);
+		sprite.end();
 		for(int j=0; j<map.getMap().length; j++) {
 			for(int k=0; k<map.getMap()[j].length; k++) {
 				if(map.getMap()[j][k]!=null) {
-					sh.setColor(map.getMap()[j][k].getC());
-					sh.rect(map.getMap()[j][k].x, map.getMap()[j][k].y, map.getMap()[j][k].width, map.getMap()[j][k].height);
+					sprite.begin();
+					sprite.draw(map.getMap()[j][k].getTexture(), map.getMap()[j][k].getX(), map.getMap()[j][k].getY());
+					sprite.end();
 				}
+				sh.begin(ShapeType.Filled);
 				sh.setColor(Color.BLACK);
 				sh.rect(300,0+20*j,200,1f);
 				sh.rect(300+20*k,0,1f,400);
+				sh.end();
 			}
 		}
-		sh.end();
 	}
 	
 	private void createPiece() {
@@ -109,25 +112,25 @@ public class Petris extends ApplicationAdapter {
 		int tmp = r.nextInt(7);
 		switch(tmp) {
 		case 0:
-			actual = new PieceI(Color.BLUE);
+			actual = new PieceI("blue.png");
 			break;
 		case 1:
-			actual = new PieceLLeft(Color.FOREST);
+			actual = new PieceLLeft("green.png");
 			break;
 		case 2:
-			actual = new PieceLRight(Color.CHARTREUSE);
+			actual = new PieceLRight("grey.png");
 			break;
 		case 3:
-			actual = new PieceS(Color.CYAN);
+			actual = new PieceS("yellow.png");
 			break;
 		case 4:
-			actual = new PieceT(Color.PINK);
+			actual = new PieceT("red.png");
 			break;
 		case 5:
-			actual = new PieceZLeft(Color.ORANGE);
+			actual = new PieceZLeft("pink.png");
 			break;
 		case 6:
-			actual = new PieceZRight(Color.BROWN);
+			actual = new PieceZRight("violet.png");
 			break;
 		}
 	}

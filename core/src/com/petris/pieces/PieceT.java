@@ -1,17 +1,11 @@
 package com.petris.pieces;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 
 public class PieceT extends Piece{
 	
-	public PieceT() {
-		
-	}
-	
-	public PieceT(Color c) {
-		super(c);
+	public PieceT(String path) {
+		super(path);
 		blocks[0] = new Rectangle(800/2,Piece.BLOCK_HEIGHT,Piece.BLOCK_HEIGHT,Piece.BLOCK_HEIGHT);
 		blocks[1] = new Rectangle(800/2-Piece.BLOCK_HEIGHT,Piece.BLOCK_HEIGHT,Piece.BLOCK_HEIGHT,Piece.BLOCK_HEIGHT);
 		blocks[2] = new Rectangle(800/2+Piece.BLOCK_HEIGHT,Piece.BLOCK_HEIGHT,Piece.BLOCK_HEIGHT,Piece.BLOCK_HEIGHT);
@@ -56,12 +50,6 @@ public class PieceT extends Piece{
 			blocks[3].setY(blocks[0].getY()-Piece.BLOCK_HEIGHT);
 			this.setState(0);
 		}
-	}
-
-	@Override
-	protected boolean canRotate(Vector2[] v) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 }

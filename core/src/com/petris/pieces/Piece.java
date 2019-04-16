@@ -1,37 +1,30 @@
 package com.petris.pieces;
 
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 
 public abstract class Piece {
 	public static final int BLOCK_HEIGHT = 20;
 	private int state;
 	protected Rectangle [] blocks;
-	private Color c;
-
-	public Piece() {
+	private Texture texture;
+	
+	public Piece(String path) {
 		blocks = new Rectangle[4];
-	}
-	public Piece(Color c) {
-		blocks = new Rectangle[4];
-		this.c = c;
+		texture = new Texture(Gdx.files.internal(path));
 	}
 	public Rectangle[] getBlocks() {
 		return blocks;
 	}
-	public Color getC() {
-		return c;
-	}
-	public void setC(Color c) {
-		this.c = c;
+	public Texture getTexture() {
+		return texture;
 	}
 	public abstract void rotate();
 	/*
 	 * TODO
 	 * @argument {Vector2[]} v - Non so se è il miglior modo per ricevere le coordinate di tutti i blocchi vicini
 	 */
-	protected abstract boolean canRotate(Vector2[] v);
 	
 	public void move() {
 		for(Rectangle i : blocks)
@@ -48,10 +41,10 @@ public abstract class Piece {
 			i.x -= BLOCK_HEIGHT;
 		return true;
 	}
-	protected int getState() {
+	public int getState() {
 		return state;
 	}
-	protected void setState(int state) {
+	public void setState(int state) {
 		this.state = state;
 	}
 }
