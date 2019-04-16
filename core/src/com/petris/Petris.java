@@ -50,20 +50,16 @@ public class Petris extends ApplicationAdapter {
 	public void render () { // TODO ASSOLUTAMENTE REFACTOR HAHA
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		/*
-		 * L'idea è avere un Piece attuale che viene generato in modo casuale tra i 4 e gestire tutto attraverso
-		 * il polimorfismo dei metodi. Una volta posato "buttarlo via" mettendo i suoi Rectangle dentro un 
-		 * ArrayList di coppie <Rectangle, Color>.
-		 */
+		
 		map.petrisControl();
 		delay += Gdx.graphics.getDeltaTime();
 		if(delay > 0.45f && !map.isAtTheEnd(actual)) {
 			actual.move();
 			delay = 0;
 		}
-		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && !map.leftCollision(actual))
+		if(!map.leftCollision(actual) && Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
 			actual.moveLeft();
-		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !map.rightCollision(actual))
+		if(!map.rightCollision(actual) && Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))
 			actual.moveRight();
 		if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && !map.isAtTheEnd(actual)) {
 			map.canRotate(actual);

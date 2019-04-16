@@ -18,6 +18,7 @@ public class PieceI extends Piece {
 	@Override
 	public void rotate() {
 		if (this.getState() == 0) {
+			
 			blocks[0].setX(blocks[0].getX() + 2 * Piece.BLOCK_HEIGHT);
 			blocks[0].setY(blocks[0].getY() + Piece.BLOCK_HEIGHT);
 			blocks[1].setX(blocks[1].getX() + Piece.BLOCK_HEIGHT);

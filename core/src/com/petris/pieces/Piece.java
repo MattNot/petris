@@ -9,7 +9,13 @@ public abstract class Piece {
 	private int state;
 	protected Rectangle [] blocks;
 	private Texture texture;
-	
+	public Piece(Piece p) {
+		this.state = p.state;
+		for(int i=0; i<4; i++) {
+			this.blocks[i] = new Rectangle(p.blocks[i]);
+		}
+		this.texture = p.texture;
+	}
 	public Piece(String path) {
 		blocks = new Rectangle[4];
 		texture = new Texture(Gdx.files.internal(path));
