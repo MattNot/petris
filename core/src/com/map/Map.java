@@ -8,12 +8,17 @@ public class Map {
 	
 	private Rectangle borders[];
 	private Block map[][];
+	public final static int START_Y = 50;
+	public final static int START_X = 290;
+	public final static int FINISH_X = 500;
+	public final static int FINISH_Y = 450;
 	
 	public Map() {
-		borders = new Rectangle[3];
-		borders[0] = new Rectangle(200+90, 0, 10, 400);
-		borders[1] = new Rectangle(400+100, 0, 10, 410);
-		borders[2] = new Rectangle(200+90, 400, 210,10);
+		borders = new Rectangle[4];
+		borders[0] = new Rectangle(Map.START_X, Map.START_Y, 10, 400);//sinistra
+		borders[1] = new Rectangle(Map.FINISH_X, Map.START_Y, 10, 410);//destra
+		borders[2] = new Rectangle(Map.START_X, Map.FINISH_Y, 210,10);//sotto
+		borders[3] = new Rectangle(Map.START_X, Map.START_Y, 210, 5);//sopra
 		map = new Block[20][10];
 	}
 	
@@ -33,6 +38,7 @@ public class Map {
 				p.moveLeft();
 		}
 		p.setState(actualState);
+		System.out.println(p.getState());
 		p.rotate();
 		return false;
 	}
@@ -41,7 +47,7 @@ public class Map {
 		for(Rectangle i : p.getBlocks()) {
 			if(i.getX() <= borders[0].getX() + Piece.BLOCK_HEIGHT)
 				return true;
-			if(i.getX() < 500 && map[(int)(i.getY())/Piece.BLOCK_HEIGHT][((int)(i.getX()-300)/Piece.BLOCK_HEIGHT)-1] != null)
+			if(i.getX() < Map.FINISH_X && map[(int)(i.getY() - Map.START_Y)/Piece.BLOCK_HEIGHT][((int)(i.getX()-Map.START_X)/Piece.BLOCK_HEIGHT)-1] != null)
 				return true;
 		}
 		return false;
@@ -51,7 +57,7 @@ public class Map {
 		for(Rectangle i : p.getBlocks()) {
 			if(i.getX() >= borders[1].getX() - Piece.BLOCK_HEIGHT)
 				return true;
-			if(map[(int)(i.getY())/Piece.BLOCK_HEIGHT][((int)(i.getX()-300)/Piece.BLOCK_HEIGHT)+1] != null)
+			if(i.getX() > Map.START_X && map[(int)(i.getY() - Map.START_Y)/Piece.BLOCK_HEIGHT][((int)(i.getX()- Map.START_X)/Piece.BLOCK_HEIGHT)+1] != null)
 				return true;
 		}
 		return false;
@@ -60,7 +66,7 @@ public class Map {
 	public boolean isAtTheEnd(Piece p) {//se è alla fine restituisce true
 		for(Rectangle i : p.getBlocks())
 		{
-			if(i.overlaps(borders[2]) || i.y >= 400-Piece.BLOCK_HEIGHT) {
+			if(i.overlaps(borders[2]) || i.y >= Map.FINISH_Y-Piece.BLOCK_HEIGHT) {
 				return true;
 			}
 			for(int j = 0; j<map.length; j++)
@@ -75,7 +81,7 @@ public class Map {
 	public void addPiece(Piece p) {
 		for(Rectangle i : p.getBlocks())
 		{
-			map[(int)(i.getY())/Piece.BLOCK_HEIGHT][(int)(i.getX()-300)/Piece.BLOCK_HEIGHT] = new Block(p.getTexture(),i);
+			map[(int)(i.getY() - Map.START_Y)/Piece.BLOCK_HEIGHT][(int)(i.getX()- Map.START_X + 10)/Piece.BLOCK_HEIGHT] = new Block(p.getTexture(),i);
 		}
 	}
 	

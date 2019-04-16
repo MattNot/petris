@@ -29,24 +29,26 @@ public class Petris extends ApplicationAdapter {
 	Piece actual;
 	Map map;
 	float delay;
+	float endDelay;
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(800,600);
+		camera = new OrthographicCamera(800,500);
 		sh = new ShapeRenderer();
 		createPiece();
 		sprite = new SpriteBatch();
-		camera.setToOrtho(true, 800, 600);
+		camera.setToOrtho(true, 800, 500);
 		sprite.setProjectionMatrix(camera.combined);
 		sh.setProjectionMatrix(camera.combined);
 		map = new Map();
 		delay = 0;
+		endDelay = 0;
 		//Ci serve un playground di 400*200 i 90 e 10 sono per fare vedere meglio i bordi
 	}
 
 	@Override
 	public void render () { // TODO ASSOLUTAMENTE REFACTOR HAHA
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		/*
 		 * L'idea è avere un Piece attuale che viene generato in modo casuale tra i 4 e gestire tutto attraverso
@@ -55,7 +57,7 @@ public class Petris extends ApplicationAdapter {
 		 */
 		map.petrisControl();
 		delay += Gdx.graphics.getDeltaTime();
-		if(delay > 0.45f) {
+		if(delay > 0.45f && !map.isAtTheEnd(actual)) {
 			actual.move();
 			delay = 0;
 		}
@@ -63,13 +65,18 @@ public class Petris extends ApplicationAdapter {
 			actual.moveLeft();
 		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !map.rightCollision(actual))
 			actual.moveRight();
-		if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+		if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && !map.isAtTheEnd(actual)) {
 			map.canRotate(actual);
 		}
 		
 		if(map.isAtTheEnd(actual)) {
-			map.addPiece(actual);
-			createPiece();
+			endDelay += Gdx.graphics.getDeltaTime();
+			if(endDelay > 0.6) {
+				map.addPiece(actual);
+				createPiece();
+				endDelay = 0;
+				sprite.setColor(Color.WHITE);
+			}
 		}else {
 			if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
 				actual.move();
@@ -77,18 +84,15 @@ public class Petris extends ApplicationAdapter {
 		//Pezzo attuale
 		sh.begin(ShapeType.Filled);
 		sh.setColor(Color.BLACK);
-		sh.rect(map.getBorders()[0].getX(), map.getBorders()[0].getY(), map.getBorders()[0].getWidth(), map.getBorders()[0].getHeight());
-		sh.rect(map.getBorders()[1].getX(), map.getBorders()[1].getY(), map.getBorders()[1].getWidth(), map.getBorders()[1].getHeight());
-		sh.rect(map.getBorders()[2].getX(), map.getBorders()[2].getY(), map.getBorders()[2].getWidth(), map.getBorders()[2].getHeight());
+		for(Rectangle i : map.getBorders()) {
+			sh.rect(i.getX(), i.getY(), i.getWidth(), i.getHeight());
+		}
 		sh.end();
 		sprite.begin();
-		//int i = 0;
 		for(Rectangle r : actual.getBlocks()) { 
-			//if(i!=0)
-				sprite.draw(actual.getTexture(), r.getX(), r.getY());
-			//else
-				//sh.setColor(Color.BLACK); //DEBUG TO LET US KNOW WHO IS THE FIRST BLOCK
-			//i++;
+			if(endDelay > 0)
+				sprite.setColor(1, 1, 1, (float)Math.abs(Math.sin(endDelay)));
+			sprite.draw(actual.getTexture(), r.getX(), r.getY());
 		}
 		sprite.end();
 		for(int j=0; j<map.getMap().length; j++) {
@@ -100,8 +104,8 @@ public class Petris extends ApplicationAdapter {
 				}
 				sh.begin(ShapeType.Filled);
 				sh.setColor(Color.BLACK);
-				sh.rect(300,0+20*j,200,1f);
-				sh.rect(300+20*k,0,1f,400);
+				sh.rect(Map.START_X + 10, Map.START_Y + Piece.BLOCK_HEIGHT*j, 200, 1f);
+				sh.rect(Map.START_X + 10 + Piece.BLOCK_HEIGHT*k, Map.START_Y, 1f, 400);
 				sh.end();
 			}
 		}
@@ -134,6 +138,7 @@ public class Petris extends ApplicationAdapter {
 			break;
 		}
 	}
+	
 	
 	@Override
 	public void dispose () {
