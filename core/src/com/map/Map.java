@@ -1,14 +1,8 @@
 package com.map;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.petris.pieces.Piece;
 import com.petris.pieces.PieceI;
-import com.petris.pieces.PieceLLeft;
-import com.petris.pieces.PieceLRight;
 import com.petris.pieces.PieceS;
 
 public class Map {

@@ -19,6 +19,7 @@ import com.petris.pieces.PieceLLeft;
 import com.petris.pieces.PieceS;
 import com.petris.pieces.PieceZLeft;
 import com.petris.pieces.PieceZRight;
+import com.sound.Noise;
 import com.petris.pieces.PieceT;;
 
 public class Petris extends ApplicationAdapter {
@@ -30,6 +31,9 @@ public class Petris extends ApplicationAdapter {
 	Map map;
 	float delay;
 	float endDelay;
+	boolean started;
+	Noise sound;
+	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -43,6 +47,8 @@ public class Petris extends ApplicationAdapter {
 		map = new Map();
 		delay = 0;
 		endDelay = 0;
+		sound = new Noise();
+		sound.playMusic();
 		//Ci serve un playground di 400*200 i 90 e 10 sono per fare vedere meglio i bordi
 	}
 
@@ -51,19 +57,35 @@ public class Petris extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
+		if(map.isAtTheEnd(actual) && started) {
+			sound.stopMusic();
+			sound.playGameover();//ovviamente non si sente
+			System.exit(0);
+		}
 		map.petrisControl();
 		delay += Gdx.graphics.getDeltaTime();
 		if(delay > 0.45f && !map.isAtTheEnd(actual)) {
 			actual.move();
 			delay = 0;
+			started = false;
 		}
 		if(!map.leftCollision(actual) && Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
 			actual.moveLeft();
 		if(!map.rightCollision(actual) && Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))
 			actual.moveRight();
 		if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && !map.isAtTheEnd(actual)) {
-			map.canRotate(actual);
+			if(map.canRotate(actual))
+				sound.playRotate();
 		}
+		/*if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) { come cazzo metto in pausa, ho sonno
+			sound.playPause();
+			while(true) {
+				if(Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+					sound.playStart();
+					break;
+				}
+			}
+		}*/
 		
 		if(map.isAtTheEnd(actual)) {
 			endDelay += Gdx.graphics.getDeltaTime();
@@ -108,6 +130,7 @@ public class Petris extends ApplicationAdapter {
 	}
 	
 	private void createPiece() {
+		started = true;
 		Random r = new Random();
 		int tmp = r.nextInt(7);
 		switch(tmp) {
@@ -139,6 +162,7 @@ public class Petris extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
+		sound.dispose();
 		//TODO Poi ci pensiamo hahah
 	}
 }
