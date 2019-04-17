@@ -52,5 +52,7 @@ public abstract class Piece {
 	}
 	public void setState(int state) {
 		this.state = state;
+		if(this.state <0)
+			this.state = 0;
 	}
 }

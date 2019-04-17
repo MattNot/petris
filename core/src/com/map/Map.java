@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.petris.pieces.Piece;
+import com.petris.pieces.PieceI;
+import com.petris.pieces.PieceLLeft;
+import com.petris.pieces.PieceLRight;
 import com.petris.pieces.PieceS;
 
 public class Map {
@@ -27,23 +30,32 @@ public class Map {
 	}
 
 	public boolean canRotate(Piece p) {
+		PieceI e = new PieceI("blue.png");
+		for(int i=0; i<4; i++)
+		{
+			e.getBlocks()[i].x = p.getBlocks()[i].x;
+			e.getBlocks()[i].y = p.getBlocks()[i].y;
+		}
 		if (p instanceof PieceS)
 			return true;
-		int actualState = p.getState() - 1;
 		p.rotate();
 		for (Rectangle i : p.getBlocks()) {
-			if(i.overlaps(borders[0]))
+			if(i.overlaps(borders[0]) || i.getX() <= borders[0].getX())
 			{
 				p.moveRight();
-			}
-			if(i.overlaps(borders[1])) 
+			}else if(i.overlaps(borders[1]) || i.getX() >= borders[1].getX()+10) 
 			{
 				p.moveLeft();
-			}
-			if (map[(int) (i.getY() - Map.START_Y) / Piece.BLOCK_HEIGHT][((int) (i.getX() - Map.START_X)
+				if(p instanceof PieceI) {
+					p.moveLeft();
+				}
+			}else if (map[(int) (i.getY() - Map.START_Y) / Piece.BLOCK_HEIGHT][((int) (i.getX() - Map.START_X)
 						/ Piece.BLOCK_HEIGHT)] != null) {
-				p.setState(actualState);
-				p.rotate();
+				for(int j=0; j<4; j++) {
+					p.getBlocks()[j].x = e.getBlocks()[j].x;
+					p.getBlocks()[j].y = e.getBlocks()[j].y;
+				}
+				p.setState(p.getState()-1);
 				break;
 			}
 		}
