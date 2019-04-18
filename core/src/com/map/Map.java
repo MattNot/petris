@@ -24,11 +24,12 @@ public class Map {
 	}
 
 	public boolean canRotate(Piece p) {
-		PieceI e = new PieceI("blue.png");
+		Rectangle[] e = new Rectangle[4];
 		for(int i=0; i<4; i++)
 		{
-			e.getBlocks()[i].x = p.getBlocks()[i].x;
-			e.getBlocks()[i].y = p.getBlocks()[i].y;
+			e[i] = new Rectangle();
+			e[i].x = p.getBlocks()[i].x;
+			e[i].y = p.getBlocks()[i].y;
 		}
 		if (p instanceof PieceS)
 			return true;
@@ -46,8 +47,8 @@ public class Map {
 			}else if (map[(int) (i.getY() - Map.START_Y) / Piece.BLOCK_HEIGHT][((int) (i.getX() - Map.START_X)
 						/ Piece.BLOCK_HEIGHT)] != null) {
 				for(int j=0; j<4; j++) {
-					p.getBlocks()[j].x = e.getBlocks()[j].x;
-					p.getBlocks()[j].y = e.getBlocks()[j].y;
+					p.getBlocks()[j].x = e[j].x;
+					p.getBlocks()[j].y = e[j].y;
 				}
 				p.setState(p.getState()-1);
 				break;

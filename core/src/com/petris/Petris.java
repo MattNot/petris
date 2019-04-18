@@ -1,6 +1,7 @@
 package com.petris;
 
 import java.util.Random;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -20,149 +21,171 @@ import com.petris.pieces.PieceS;
 import com.petris.pieces.PieceZLeft;
 import com.petris.pieces.PieceZRight;
 import com.sound.Noise;
-import com.petris.pieces.PieceT;;
+import com.petris.pieces.PieceT;
 
 public class Petris extends ApplicationAdapter {
-	SpriteBatch batch;
-	ShapeRenderer sh;
-	OrthographicCamera camera;
-	SpriteBatch sprite;
-	Piece actual;
-	Map map;
-	float delay;
-	float endDelay;
-	boolean started;
-	Noise sound;
-	
-	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		camera = new OrthographicCamera(800,500);
-		sh = new ShapeRenderer();
-		createPiece();
-		sprite = new SpriteBatch();
-		camera.setToOrtho(true, 800, 500);
-		sprite.setProjectionMatrix(camera.combined);
-		sh.setProjectionMatrix(camera.combined);
-		map = new Map();
-		delay = 0;
-		endDelay = 0;
-		sound = new Noise();
-		sound.playMusic();
-		//Ci serve un playground di 400*200 i 90 e 10 sono per fare vedere meglio i bordi
-	}
+    SpriteBatch batch;
+    ShapeRenderer sh;
+    OrthographicCamera camera;
+    SpriteBatch sprite;
+    Piece actual;
+    Map map;
+    float delay;
+    float endDelay;
+    boolean started;
+    boolean pause;
+    Noise sound;
 
-	@Override
-	public void render () { // TODO ASSOLUTAMENTE REFACTOR HAHA
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		if(map.isAtTheEnd(actual) && started) {
-			sound.stopMusic();
-			sound.playGameover();//ovviamente non si sente
-			System.exit(0);
-		}
-		map.petrisControl();
-		delay += Gdx.graphics.getDeltaTime();
-		if(delay > 0.45f && !map.isAtTheEnd(actual)) {
-			actual.move();
-			delay = 0;
-			started = false;
-		}
-		if(!map.leftCollision(actual) && Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
-			actual.moveLeft();
-		if(!map.rightCollision(actual) && Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))
-			actual.moveRight();
-		if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && !map.isAtTheEnd(actual)) {
-			if(map.canRotate(actual))
-				sound.playRotate();
-		}
-		/*if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) { come cazzo metto in pausa, ho sonno
-			sound.playPause();
-			while(true) {
-				if(Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-					sound.playStart();
-					break;
-				}
-			}
-		}*/
-		
-		if(map.isAtTheEnd(actual)) {
-			endDelay += Gdx.graphics.getDeltaTime();
-			if(endDelay > 0.6) {
-				map.addPiece(actual);
-				createPiece();
-				endDelay = 0;
-				sprite.setColor(Color.WHITE);
-			}
-		}else {
-			if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-				actual.move();
-		}
-		//Pezzo attuale
-		sh.begin(ShapeType.Filled);
-		sh.setColor(Color.BLACK);
-		for(Rectangle i : map.getBorders()) {
-			sh.rect(i.getX(), i.getY(), i.getWidth(), i.getHeight());
-		}
-		sh.end();
-		sprite.begin();
-		for(Rectangle r : actual.getBlocks()) { 
-			if(endDelay > 0)
-				sprite.setColor(1, 1, 1, (float)Math.abs(Math.sin(endDelay)));
-			sprite.draw(actual.getTexture(), r.getX(), r.getY());
-		}
-		sprite.end();
-		for(int j=0; j<map.getMap().length; j++) {
-			for(int k=0; k<map.getMap()[j].length; k++) {
-				if(map.getMap()[j][k]!=null) {
-					sprite.begin();
-					sprite.draw(map.getMap()[j][k].getTexture(), map.getMap()[j][k].getX(), map.getMap()[j][k].getY());
-					sprite.end();
-				}
-				sh.begin(ShapeType.Filled);
-				sh.setColor(Color.BLACK);
-				sh.rect(Map.START_X + 10, Map.START_Y + Piece.BLOCK_HEIGHT*j, 200, 1f);
-				sh.rect(Map.START_X + 10 + Piece.BLOCK_HEIGHT*k, Map.START_Y, 1f, 400);
-				sh.end();
-			}
-		}
-	}
-	
-	private void createPiece() {
-		started = true;
-		Random r = new Random();
-		int tmp = r.nextInt(7);
-		switch(tmp) {
-		case 0:
-			actual = new PieceI("blue.png");
-			break;
-		case 1:
-			actual = new PieceLLeft("green.png");
-			break;
-		case 2:
-			actual = new PieceLRight("grey.png");
-			break;
-		case 3:
-			actual = new PieceS("yellow.png");
-			break;
-		case 4:
-			actual = new PieceT("red.png");
-			break;
-		case 5:
-			actual = new PieceZLeft("pink.png");
-			break;
-		case 6:
-			actual = new PieceZRight("violet.png");
-			break;
-		}
-	}
-	
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		sound.dispose();
-		//TODO Poi ci pensiamo hahah
-	}
+    @Override
+    public void create() {
+        batch = new SpriteBatch();
+        camera = new OrthographicCamera(800, 500);
+        sh = new ShapeRenderer();
+        createPiece();
+        sprite = new SpriteBatch();
+        camera.setToOrtho(true, 800, 500);
+        sprite.setProjectionMatrix(camera.combined);
+        sh.setProjectionMatrix(camera.combined);
+        map = new Map();
+        delay = 0;
+        endDelay = 0;
+        sound = new Noise();
+        sound.playStart();
+        sound.playMusic();
+        pause = false;
+        //Ci serve un playground di 400*200 i 90 e 10 sono per fare vedere meglio i bordi
+    }
+
+    public void play() {
+        if (map.isAtTheEnd(actual) && started) {
+            sound.stopMusic();
+            sound.playGameover();
+            pause = true;
+        }
+        map.petrisControl();
+        delay += Gdx.graphics.getDeltaTime();
+        if (delay > 0.45f && !map.isAtTheEnd(actual)) {
+            actual.move();
+            delay = 0;
+            started = false;
+        }
+        if (!map.leftCollision(actual) && Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
+            actual.moveLeft();
+        if (!map.rightCollision(actual) && Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))
+            actual.moveRight();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && !map.isAtTheEnd(actual)) {
+            if (map.canRotate(actual))
+                sound.playRotate();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            sound.stopMusic();
+            sound.playPause();
+            pause = true;
+        }
+
+        if (map.isAtTheEnd(actual)) {
+            endDelay += Gdx.graphics.getDeltaTime();
+            if (endDelay > 0.6) {
+                map.addPiece(actual);
+                createPiece();
+                endDelay = 0;
+                sprite.setColor(Color.WHITE);
+            }
+        } else {
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+                actual.move();
+        }
+    }
+
+    public void drawBorders() {
+        sh.begin(ShapeType.Filled);
+        sh.setColor(Color.BLACK);
+        for (Rectangle i : map.getBorders()) {
+            sh.rect(i.getX(), i.getY(), i.getWidth(), i.getHeight());
+        }
+        sh.end();
+    }
+
+    public void drawActualPiece(){
+        sprite.begin();
+        for (Rectangle r : actual.getBlocks()) {
+            if (endDelay > 0)
+                sprite.setColor(1, 1, 1, (float) Math.abs(Math.sin(endDelay))); // Fucking love math
+            sprite.draw(actual.getTexture(), r.getX(), r.getY());
+        }
+        sprite.end();
+    }
+
+    public void drawMap(){
+        for (int j = 0; j < map.getMap().length; j++) {
+            for (int k = 0; k < map.getMap()[j].length; k++) {
+                if (map.getMap()[j][k] != null) {
+                    sprite.begin();
+                    sprite.draw(map.getMap()[j][k].getTexture(), map.getMap()[j][k].getX(),
+                            map.getMap()[j][k].getY());
+                    sprite.end();
+                }
+                sh.begin(ShapeType.Filled);
+                sh.setColor(Color.BLACK);
+                sh.rect(Map.START_X + 10, Map.START_Y + Piece.BLOCK_HEIGHT * j, 200, 1f);
+                sh.rect(Map.START_X + 10 + Piece.BLOCK_HEIGHT * k, Map.START_Y, 1f, 400);
+                sh.end();
+            }
+        }
+    }
+
+    @Override
+    public void render() { // TODO ASSOLUTAMENTE REFACTOR HAHA
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if (!pause) {
+            play();
+        } else {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                sound.playPause();
+                sound.playMusic();
+                pause = false;
+            }
+        }
+        this.drawBorders();
+        this.drawActualPiece();
+        sprite.setColor(Color.WHITE); //Undo trasparency if needed
+        this.drawMap();
+    }
+
+    private void createPiece() {
+        started = true;
+        Random r = new Random();
+        int tmp = r.nextInt(7);
+        switch (tmp) {
+            case 0:
+                actual = new PieceI("blue.png");
+                break;
+            case 1:
+                actual = new PieceLLeft("green.png");
+                break;
+            case 2:
+                actual = new PieceLRight("grey.png");
+                break;
+            case 3:
+                actual = new PieceS("yellow.png");
+                break;
+            case 4:
+                actual = new PieceT("red.png");
+                break;
+            case 5:
+                actual = new PieceZLeft("pink.png");
+                break;
+            case 6:
+                actual = new PieceZRight("violet.png");
+                break;
+        }
+    }
+
+    @Override
+    public void dispose() {
+        batch.dispose();
+        sound.dispose();
+        //TODO Poi ci pensiamo hahah
+    }
 }
