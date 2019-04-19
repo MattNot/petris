@@ -1,7 +1,6 @@
 package com.petris;
 
 import java.util.Random;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -92,6 +91,7 @@ public class Petris extends ApplicationAdapter {
                 sprite.setColor(Color.WHITE);
             }
         } else {
+            endDelay = 0;
             if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
                 actual.move();
         }
