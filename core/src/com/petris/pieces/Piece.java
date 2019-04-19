@@ -55,4 +55,8 @@ public abstract class Piece {
 		if(this.state <0)
 			this.state = 0;
 	}
+	@Override
+	public Piece clone() throws CloneNotSupportedException {
+		return this;
+	}
 }

@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Queue;
 import com.map.Map;
 import com.petris.pieces.Piece;
 import com.petris.pieces.PieceI;
@@ -21,6 +22,9 @@ import com.petris.pieces.PieceZLeft;
 import com.petris.pieces.PieceZRight;
 import com.sound.Noise;
 import com.petris.pieces.PieceT;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Petris extends ApplicationAdapter {
     SpriteBatch batch;
@@ -34,21 +38,23 @@ public class Petris extends ApplicationAdapter {
     boolean started;
     boolean pause;
     Noise sound;
-
+    int points;
+    Queue<Piece> nextPieces;
     @Override
     public void create() {
         batch = new SpriteBatch();
         camera = new OrthographicCamera(800, 500);
         sh = new ShapeRenderer();
-        createPiece();
         sprite = new SpriteBatch();
+        map = new Map();
+        sound = new Noise();
+        nextPieces = new Queue<Piece>();
+        createPiece();
         camera.setToOrtho(true, 800, 500);
         sprite.setProjectionMatrix(camera.combined);
         sh.setProjectionMatrix(camera.combined);
-        map = new Map();
         delay = 0;
         endDelay = 0;
-        sound = new Noise();
         sound.playStart();
         sound.playMusic();
         pause = false;
@@ -110,8 +116,16 @@ public class Petris extends ApplicationAdapter {
         sprite.begin();
         for (Rectangle r : actual.getBlocks()) {
             if (endDelay > 0)
-                sprite.setColor(1, 1, 1, (float) Math.abs(Math.sin(endDelay))); // Fucking love math
+                sprite.setColor(1, 1, 1, (float) Math.abs(Math.sin(endDelay))); // We <3 Math
             sprite.draw(actual.getTexture(), r.getX(), r.getY());
+        }
+        sprite.setColor(Color.WHITE);
+        int i = 0;
+        for(Piece p : nextPieces) {
+            for (Rectangle r :p.getBlocks()) {
+                sprite.draw(p.getTexture(), r.getX() + 200, r.getY() + i*90);
+            }
+            i++;
         }
         sprite.end();
     }
@@ -149,37 +163,39 @@ public class Petris extends ApplicationAdapter {
         }
         this.drawBorders();
         this.drawActualPiece();
-        sprite.setColor(Color.WHITE); //Undo trasparency if needed
+        sprite.setColor(Color.WHITE); //Undo transparency if needed
         this.drawMap();
     }
 
-    private void createPiece() {
-        started = true;
+    private Piece chooseAPiece(){
         Random r = new Random();
         int tmp = r.nextInt(7);
         switch (tmp) {
             case 0:
-                actual = new PieceI("blue.png");
-                break;
+                return new PieceI("blue.png");
             case 1:
-                actual = new PieceLLeft("green.png");
-                break;
+                return new PieceLLeft("green.png");
             case 2:
-                actual = new PieceLRight("grey.png");
-                break;
+                return new PieceLRight("grey.png");
             case 3:
-                actual = new PieceS("yellow.png");
-                break;
+                return new PieceS("yellow.png");
             case 4:
-                actual = new PieceT("red.png");
-                break;
+                return new PieceT("red.png");
             case 5:
-                actual = new PieceZLeft("pink.png");
-                break;
+                return (new PieceZLeft("pink.png"));
             case 6:
-                actual = new PieceZRight("violet.png");
-                break;
+                return (new PieceZRight("violet.png"));
         }
+        return new PieceI("blue.png");
+    }
+
+    private void createPiece() {
+        started = true;
+        nextPieces.addLast(chooseAPiece());
+        actual = nextPieces.first();
+        nextPieces.removeFirst();
+        while(nextPieces.size < 4)
+            nextPieces.addLast(chooseAPiece());
     }
 
     @Override
