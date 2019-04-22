@@ -7,7 +7,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,24 +25,24 @@ import com.petris.pieces.PieceZLeft;
 import com.petris.pieces.PieceZRight;
 import com.sound.Noise;
 import com.petris.pieces.PieceT;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 public class Petris extends ApplicationAdapter {
     SpriteBatch batch;
-    ShapeRenderer sh;
     OrthographicCamera camera;
+    ShapeRenderer sh;
+    FreeTypeFontGenerator generator;
+    FreeTypeFontParameter parameter;
+    BitmapFont font;
+    Noise sound;
     SpriteBatch sprite;
     Piece actual;
+    Piece hold;
+    Queue<Piece> nextPieces;
     Map map;
     float delay;
     float endDelay;
     boolean started;
     boolean pause;
-    Noise sound;
-    int points;
-    Queue<Piece> nextPieces;
+    Integer points;
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -49,16 +52,34 @@ public class Petris extends ApplicationAdapter {
         map = new Map();
         sound = new Noise();
         nextPieces = new Queue<Piece>();
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("Minecraft.ttf"));
+        parameter = new FreeTypeFontParameter();
+        font = new BitmapFont();
         createPiece();
         camera.setToOrtho(true, 800, 500);
         sprite.setProjectionMatrix(camera.combined);
         sh.setProjectionMatrix(camera.combined);
         delay = 0;
+        points = 0;
         endDelay = 0;
         sound.playStart();
         sound.playMusic();
         pause = false;
         //Ci serve un playground di 400*200 i 90 e 10 sono per fare vedere meglio i bordi
+    }
+
+    public void exchangeWithHold(){
+        if(hold == null){
+            hold = actual;
+            hold.goInHold();
+            createPiece();
+        }else{
+            Piece tmp = actual;
+            actual = hold;
+            hold = tmp;
+            hold.goInHold();
+            actual.goToStart();
+        }
     }
 
     public void play() {
@@ -67,7 +88,10 @@ public class Petris extends ApplicationAdapter {
             sound.playGameover();
             pause = true;
         }
-        map.petrisControl();
+        if(Gdx.input.isKeyJustPressed(Input.Keys.V)){
+            exchangeWithHold();
+        }
+        map.petrisControl(points); //TODO: Non funziona il passaggio per parametri, tha fuck?
         delay += Gdx.graphics.getDeltaTime();
         if (delay > 0.45f && !map.isAtTheEnd(actual)) {
             actual.move();
@@ -92,14 +116,17 @@ public class Petris extends ApplicationAdapter {
             endDelay += Gdx.graphics.getDeltaTime();
             if (endDelay > 0.6) {
                 map.addPiece(actual);
+                points+=100;
                 createPiece();
                 endDelay = 0;
                 sprite.setColor(Color.WHITE);
             }
         } else {
             endDelay = 0;
-            if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                 actual.move();
+                points+=10;
+            }
         }
     }
 
@@ -110,6 +137,13 @@ public class Petris extends ApplicationAdapter {
             sh.rect(i.getX(), i.getY(), i.getWidth(), i.getHeight());
         }
         sh.end();
+        parameter.size = 48;
+        parameter.color = Color.BLACK;
+        parameter.flip = true;
+        sprite.begin();
+        font = generator.generateFont(parameter);
+        font.draw(sprite, Integer.toString(points), 800/2, 10);
+        sprite.end();
     }
 
     public void drawActualPiece(){
@@ -126,6 +160,11 @@ public class Petris extends ApplicationAdapter {
                 sprite.draw(p.getTexture(), r.getX() + 200, r.getY() + i*90);
             }
             i++;
+        }
+        if(hold != null) {
+            for (Rectangle r : hold.getBlocks()) {
+                sprite.draw(hold.getTexture(), r.getX(), r.getY());
+            }
         }
         sprite.end();
     }
@@ -149,7 +188,7 @@ public class Petris extends ApplicationAdapter {
     }
 
     @Override
-    public void render() { // TODO ASSOLUTAMENTE REFACTOR HAHA
+    public void render() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (!pause) {

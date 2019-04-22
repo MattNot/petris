@@ -51,4 +51,14 @@ public class PieceLRight extends Piece {
 			this.setState(0);
 		}
 	}
+
+	@Override
+	public void goInHold() {
+
+	}
+
+	@Override
+	public void goToStart() {
+
+	}
 }

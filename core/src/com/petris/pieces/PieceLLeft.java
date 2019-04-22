@@ -49,4 +49,25 @@ public class PieceLLeft extends Piece {
 		}
 	}
 
+	@Override
+	public void goInHold() {
+		blocks[0] = new Rectangle(Map.START_HOLD_X - Piece.BLOCK_HEIGHT,
+				Map.START_HOLD_Y + 3 * Piece.BLOCK_HEIGHT,
+				Piece.BLOCK_HEIGHT,
+				Piece.BLOCK_HEIGHT);
+		blocks[1] = new Rectangle(Map.START_HOLD_X, Map.START_HOLD_Y + 3 * Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
+		blocks[2] = new Rectangle(Map.START_HOLD_X, Map.START_HOLD_Y + 2 * Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
+		blocks[3] = new Rectangle(Map.START_HOLD_X, Map.START_HOLD_Y + Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
+	}
+
+	@Override
+	public void goToStart() {
+		blocks[0] = new Rectangle(800 / 2 - Piece.BLOCK_HEIGHT, Map.START_Y + 3 * Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT,
+				Piece.BLOCK_HEIGHT);
+		blocks[1] = new Rectangle(800 / 2, Map.START_Y + 3 * Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
+		blocks[2] = new Rectangle(800 / 2, Map.START_Y + 2 * Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
+		blocks[3] = new Rectangle(800 / 2, Map.START_Y + Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
+
+	}
+
 }

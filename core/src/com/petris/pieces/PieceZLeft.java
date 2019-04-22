@@ -33,4 +33,14 @@ public class PieceZLeft extends Piece {
 			this.setState(0);
 		}
 	}
+
+	@Override
+	public void goInHold() {
+
+	}
+
+	@Override
+	public void goToStart() {
+
+	}
 }

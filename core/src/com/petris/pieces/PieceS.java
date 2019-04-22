@@ -18,4 +18,14 @@ public class PieceS extends Piece {
 	public void rotate() {
 	}
 
+	@Override
+	public void goInHold() {
+
+	}
+
+	@Override
+	public void goToStart() {
+
+	}
+
 }

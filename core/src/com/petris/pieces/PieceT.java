@@ -52,4 +52,14 @@ public class PieceT extends Piece {
 		}
 	}
 
+	@Override
+	public void goInHold() {
+
+	}
+
+	@Override
+	public void goToStart() {
+
+	}
+
 }

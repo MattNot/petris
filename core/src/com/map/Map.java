@@ -13,7 +13,10 @@ public class Map {
 	public final static int START_X = 290;
 	public final static int FINISH_X = 500;
 	public final static int FINISH_Y = 450;
-
+	public final static int START_HOLD_X = 100;
+	public final static int FINISH_HOLD_X = 200;
+	public final static int START_HOLD_Y = 50;
+	public final static int FINISH_HOLD_Y = 150;
 	public Map() {
 		borders = new Rectangle[4];
 		borders[0] = new Rectangle(Map.START_X, Map.START_Y, 10, 400);// sinistra
@@ -102,7 +105,23 @@ public class Map {
 		}
 	}
 
-	private void deleteRow(int riga) {
+	public void petrisControl(Integer points) {
+		for (int i = 0; i < map.length; ++i) {
+			boolean petris = true;
+			for (int j = 0; j < map[i].length; ++j)
+				if (map[i][j] == null) {
+					petris = false;
+					break;
+				}
+			if (petris) {
+				deleteRow(i--, points);
+			}
+		}
+	}
+
+	private void deleteRow(int riga, Integer points) {
+		points+=500;
+		System.out.println(points+" delete");
 		Block temp[][] = new Block[20][10];
 		for (int i = map.length - 1; i > riga; --i)
 			temp[i] = map[i].clone();
@@ -116,18 +135,6 @@ public class Map {
 		map = temp;
 	}
 
-	public void petrisControl() {
-		for (int i = 0; i < map.length; ++i) {
-			boolean petris = true;
-			for (int j = 0; j < map[i].length; ++j)
-				if (map[i][j] == null) {
-					petris = false;
-					break;
-				}
-			if (petris)
-				deleteRow(i--);
-		}
-	}
 
 	public Rectangle[] getBorders() {
 		return borders;
