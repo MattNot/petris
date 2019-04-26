@@ -7,12 +7,7 @@ public class PieceI extends Piece {
 
 	public PieceI(String path) {
 		super(path);
-		blocks[0] = new Rectangle(800 / 2, Map.START_Y, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
-		blocks[1] = new Rectangle(800 / 2, Map.START_Y + Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
-		blocks[2] = new Rectangle(800 / 2, Map.START_Y + Piece.BLOCK_HEIGHT * 2, Piece.BLOCK_HEIGHT,
-				Piece.BLOCK_HEIGHT);
-		blocks[3] = new Rectangle(800 / 2, Map.START_Y + Piece.BLOCK_HEIGHT * 3, Piece.BLOCK_HEIGHT,
-				Piece.BLOCK_HEIGHT);
+		this.goToStart();
 	}
 
 	@Override
@@ -47,6 +42,7 @@ public class PieceI extends Piece {
 		blocks[2].setY(Map.START_HOLD_Y+Piece.BLOCK_HEIGHT*2);
 		blocks[3].setX(Map.START_HOLD_X);
 		blocks[3].setY(Map.START_HOLD_Y+Piece.BLOCK_HEIGHT*3);
+		this.setState(0);
 	}
 
 	@Override

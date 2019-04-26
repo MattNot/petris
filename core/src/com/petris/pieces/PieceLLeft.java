@@ -7,11 +7,7 @@ public class PieceLLeft extends Piece {
 
 	public PieceLLeft(String path) {
 		super(path);
-		blocks[0] = new Rectangle(800 / 2 - Piece.BLOCK_HEIGHT, Map.START_Y + 3 * Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT,
-				Piece.BLOCK_HEIGHT);
-		blocks[1] = new Rectangle(800 / 2, Map.START_Y + 3 * Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
-		blocks[2] = new Rectangle(800 / 2, Map.START_Y + 2 * Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
-		blocks[3] = new Rectangle(800 / 2, Map.START_Y + Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
+		this.goToStart();
 
 	}
 
@@ -51,13 +47,15 @@ public class PieceLLeft extends Piece {
 
 	@Override
 	public void goInHold() {
-		blocks[0] = new Rectangle(Map.START_HOLD_X - Piece.BLOCK_HEIGHT,
-				Map.START_HOLD_Y + 3 * Piece.BLOCK_HEIGHT,
-				Piece.BLOCK_HEIGHT,
-				Piece.BLOCK_HEIGHT);
-		blocks[1] = new Rectangle(Map.START_HOLD_X, Map.START_HOLD_Y + 3 * Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
-		blocks[2] = new Rectangle(Map.START_HOLD_X, Map.START_HOLD_Y + 2 * Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
-		blocks[3] = new Rectangle(Map.START_HOLD_X, Map.START_HOLD_Y + Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT, Piece.BLOCK_HEIGHT);
+		blocks[0].setX(Map.START_HOLD_X);
+		blocks[0].setY(Map.START_HOLD_Y);
+		blocks[1].setX(Map.START_HOLD_X);
+		blocks[1].setY(Map.START_HOLD_Y+Piece.BLOCK_HEIGHT);
+		blocks[2].setX(Map.START_HOLD_X);
+		blocks[2].setY(Map.START_HOLD_Y+Piece.BLOCK_HEIGHT*2);
+		blocks[3].setX(Map.START_HOLD_X-Piece.BLOCK_HEIGHT);
+		blocks[3].setY(Map.START_HOLD_Y+Piece.BLOCK_HEIGHT*2);
+		this.setState(0);
 	}
 
 	@Override

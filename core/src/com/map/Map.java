@@ -27,6 +27,8 @@ public class Map {
 	}
 
 	public boolean canRotate(Piece p) {
+		if (p instanceof PieceS)
+			return true;
 		Rectangle[] e = new Rectangle[4];
 		for(int i=0; i<4; i++)
 		{
@@ -34,20 +36,20 @@ public class Map {
 			e[i].x = p.getBlocks()[i].x;
 			e[i].y = p.getBlocks()[i].y;
 		}
-		if (p instanceof PieceS)
-			return true;
 		p.rotate();
 		for (Rectangle i : p.getBlocks()) {
 			if(i.overlaps(borders[0]) || i.getX() <= borders[0].getX())
 			{
 				p.moveRight();
-			}else if(i.overlaps(borders[1]) || i.getX() >= borders[1].getX()+10) 
+			}
+			else if(i.overlaps(borders[1]) || i.getX() >= borders[1].getX()+10) 
 			{
 				p.moveLeft();
 				if(p instanceof PieceI) {
 					p.moveLeft();
 				}
-			}else if (map[(int) (i.getY() - Map.START_Y) / Piece.BLOCK_HEIGHT][((int) (i.getX() - Map.START_X)
+			}
+			else if (map[(int) (i.getY() - Map.START_Y) / Piece.BLOCK_HEIGHT][((int) (i.getX() - Map.START_X)
 						/ Piece.BLOCK_HEIGHT)] != null) {
 				for(int j=0; j<4; j++) {
 					p.getBlocks()[j].x = e[j].x;

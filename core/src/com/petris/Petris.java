@@ -25,6 +25,7 @@ import com.petris.pieces.PieceZLeft;
 import com.petris.pieces.PieceZRight;
 import com.sound.Noise;
 import com.petris.pieces.PieceT;
+
 public class Petris extends ApplicationAdapter {
     SpriteBatch batch;
     OrthographicCamera camera;
@@ -98,9 +99,9 @@ public class Petris extends ApplicationAdapter {
             delay = 0;
             started = false;
         }
-        if (!map.leftCollision(actual) && Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && !map.leftCollision(actual))
             actual.moveLeft();
-        if (!map.rightCollision(actual) && Gdx.input.isKeyJustPressed(Input.Keys.RIGHT))
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !map.rightCollision(actual))
             actual.moveRight();
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && !map.isAtTheEnd(actual)) {
             if (map.canRotate(actual))
@@ -137,13 +138,13 @@ public class Petris extends ApplicationAdapter {
             sh.rect(i.getX(), i.getY(), i.getWidth(), i.getHeight());
         }
         sh.end();
-        parameter.size = 48;
+        /*parameter.size = 48;
         parameter.color = Color.BLACK;
         parameter.flip = true;
         sprite.begin();
         font = generator.generateFont(parameter);
         font.draw(sprite, Integer.toString(points), 800/2, 10);
-        sprite.end();
+        sprite.end();*/
     }
 
     public void drawActualPiece(){
@@ -193,7 +194,8 @@ public class Petris extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (!pause) {
             play();
-        } else {
+        } 
+        else {
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 sound.playPause();
                 sound.playMusic();
