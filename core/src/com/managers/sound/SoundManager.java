@@ -1,9 +1,9 @@
-package com.sound;
+package com.managers.sound;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 
-public class Noise {
+public class SoundManager {
 	
 	private Sound gameover;
 	private Sound music;
@@ -11,7 +11,7 @@ public class Noise {
 	private Sound rotate;
 	private Sound start;
 	
-	public Noise() {
+	public SoundManager() {
 		gameover = Gdx.audio.newSound(Gdx.files.internal("gameover.mp3"));
 		music = Gdx.audio.newSound(Gdx.files.internal("music.mp3"));
 		music.loop(0.2f);
