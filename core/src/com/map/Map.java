@@ -5,10 +5,13 @@ import com.petris.pieces.Piece;
 import com.petris.pieces.PieceI;
 import com.petris.pieces.PieceS;
 
+import java.util.ArrayList;
+
 public class Map {
 
     private Rectangle borders[];
     private Block map[][];
+    public ArrayList<Integer> rowsToDelete;
     public final static int START_Y = 50;
     public final static int START_X = 290;
     public final static int FINISH_X = 500;
@@ -19,6 +22,7 @@ public class Map {
     public final static int FINISH_HOLD_Y = 150;
 
     public Map() {
+        rowsToDelete = new ArrayList<Integer>();
         borders = new Rectangle[4];
         borders[0] = new Rectangle(Map.START_X, Map.START_Y, 10, 400);// sinistra
         borders[1] = new Rectangle(Map.FINISH_X, Map.START_Y, 10, 410);// destra
@@ -112,6 +116,7 @@ public class Map {
                     break;
                 }
             if (petris) {
+                rowsToDelete.add(i);
                 deleteRow(i--, points);
             }
         }
@@ -119,7 +124,6 @@ public class Map {
 
     private void deleteRow(int riga, Integer points) {
         points += 500;
-        System.out.println(points + " delete");
         Block temp[][] = new Block[20][10];
         for (int i = map.length - 1; i > riga; --i)
             temp[i] = map[i].clone();

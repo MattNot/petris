@@ -21,9 +21,10 @@ public class Petris extends ApplicationAdapter {
     Map map;
     float delay;
     float endDelay;
+    float blink;
     boolean started;
     boolean pause;
-    boolean canExchange;
+    boolean canSwap;
     Integer points;
 
     @Override
@@ -32,14 +33,15 @@ public class Petris extends ApplicationAdapter {
         graphicManager = new GraphicManager();
         soundManager = new SoundManager();
         nextPieces = new Queue<Piece>();
+        soundManager.playStart();
+        soundManager.playMusic();
         createPiece();
         delay = 0;
         points = 0;
         endDelay = 0;
-        soundManager.playStart();
-        soundManager.playMusic();
+        blink = 0;
         pause = false;
-        canExchange = true;
+        canSwap = true;
         //Ci serve un playground di 400*200 i 90 e 10 sono per fare vedere meglio i bordi
     }
 
@@ -56,12 +58,13 @@ public class Petris extends ApplicationAdapter {
                 pause = false;
             }
         }
-        graphicManager.drawBorders(map);
+        graphicManager.drawBorders(map, points);
         graphicManager.drawPieces(actual, hold, nextPieces, endDelay);
-        graphicManager.drawMap(map);
+        graphicManager.drawMap(map,blink);
+        graphicManager.restoreTransparency();
     }
 
-    public void exchangeWithHold() {
+    public void swapWithHold() {
         if (hold == null) {
             hold = actual;
             hold.goInHold();
@@ -73,7 +76,7 @@ public class Petris extends ApplicationAdapter {
             hold.goInHold();
             actual.goToStart();
         }
-        canExchange = false;
+        canSwap = false;
     }
 
     public void play() {
@@ -85,8 +88,8 @@ public class Petris extends ApplicationAdapter {
             if (map.canRotate(actual))
                 soundManager.playRotate();
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.V) && canExchange) {
-            exchangeWithHold();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.V) && canSwap) {
+            swapWithHold();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             soundManager.stopMusic();
@@ -95,7 +98,13 @@ public class Petris extends ApplicationAdapter {
         }
 
         map.petrisControl(points); //TODO: Non funziona il passaggio per parametri, tha fuck?
-
+        if(!map.rowsToDelete.isEmpty()){
+            blink+=Gdx.graphics.getDeltaTime();
+        }
+        if(blink >= 1.0){
+            map.rowsToDelete.clear();
+            blink = 0;
+        }
         if (map.isAtTheEnd(actual) && started) {
             soundManager.stopMusic();
             soundManager.playGameover();
@@ -154,7 +163,7 @@ public class Petris extends ApplicationAdapter {
         nextPieces.addLast(chooseAPiece());
         actual = nextPieces.first();
         nextPieces.removeFirst();
-        canExchange = true;
+        canSwap = true;
         while (nextPieces.size < 4)
             nextPieces.addLast(chooseAPiece());
     }

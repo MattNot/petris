@@ -32,20 +32,21 @@ public class GraphicManager {
         sh.setProjectionMatrix(camera.combined);
     }
 
-    public void drawBorders(Map map) {
+    public void drawBorders(Map map, Integer points) {
         sh.begin(ShapeRenderer.ShapeType.Filled);
         sh.setColor(Color.BLACK);
         for (Rectangle i : map.getBorders()) {
             sh.rect(i.getX(), i.getY(), i.getWidth(), i.getHeight());
         }
         sh.end();
-        /*parameter.size = 48;
+        parameter.size = 48;
         parameter.color = Color.BLACK;
         parameter.flip = true;
         sprite.begin();
         font = generator.generateFont(parameter);
         font.draw(sprite, Integer.toString(points), 800/2, 10);
-        sprite.end();*/
+        sprite.end();
+        font.dispose();
     }
 
     public void drawPieces(Piece actual, Piece hold, Queue<Piece> nextPieces, double endDelay) {
@@ -87,11 +88,17 @@ public class GraphicManager {
         sprite.end();
     }
 
-    public void drawMap(Map map) {
+    public void drawMap(Map map, float blink) {
+        boolean hasToBlink;
         for (int j = 0; j < map.getMap().length; j++) {
+            hasToBlink = map.rowsToDelete.contains(j);
             for (int k = 0; k < map.getMap()[j].length; k++) {
                 if (map.getMap()[j][k] != null) {
                     sprite.begin();
+                    if (hasToBlink)
+                        sprite.setColor(1, 1, 1, (float) Math.abs(Math.sin(blink)));
+                    else
+                        sprite.setColor(Color.WHITE);
                     sprite.draw(map.getMap()[j][k].getTexture(), map.getMap()[j][k].getX(),
                             map.getMap()[j][k].getY());
                     sprite.end();
