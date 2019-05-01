@@ -1,143 +1,176 @@
 package com.petris;
 
-import java.util.Random;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Queue;
+import com.managers.graphics.GraphicManager;
 import com.map.Map;
-import com.petris.pieces.Piece;
-import com.petris.pieces.PieceI;
-import com.petris.pieces.PieceLRight;
-import com.petris.pieces.PieceLLeft;
-import com.petris.pieces.PieceS;
-import com.petris.pieces.PieceZLeft;
-import com.petris.pieces.PieceZRight;
-import com.petris.pieces.PieceT;;
+import com.petris.pieces.*;
+import com.managers.sound.SoundManager;
+
+import java.util.Random;
 
 public class Petris extends ApplicationAdapter {
-	SpriteBatch batch;
-	ShapeRenderer sh;
-	OrthographicCamera camera;
-	SpriteBatch sprite;
-	Piece actual;
-	Map map;
-	float delay;
-	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		camera = new OrthographicCamera(800,600);
-		sh = new ShapeRenderer();
-		createPiece();
-		sprite = new SpriteBatch();
-		camera.setToOrtho(true, 800, 600);
-		sprite.setProjectionMatrix(camera.combined);
-		sh.setProjectionMatrix(camera.combined);
-		map = new Map();
-		delay = 0;
-		//Ci serve un playground di 400*200 i 90 e 10 sono per fare vedere meglio i bordi
-	}
+    GraphicManager graphicManager;
+    SoundManager soundManager;
+    Piece actual;
+    Piece hold;
+    Queue<Piece> nextPieces;
+    Map map;
+    float delay;
+    float endDelay;
+    float blink;
+    boolean started;
+    boolean pause;
+    boolean canSwap;
+    Integer points;
 
-	@Override
-	public void render () { // TODO ASSOLUTAMENTE REFACTOR HAHA
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		/*
-		 * L'idea è avere un Piece attuale che viene generato in modo casuale tra i 4 e gestire tutto attraverso
-		 * il polimorfismo dei metodi. Una volta posato "buttarlo via" mettendo i suoi Rectangle dentro un 
-		 * ArrayList di coppie <Rectangle, Color>.
-		 */
-		map.petrisControl();
-		delay += Gdx.graphics.getDeltaTime();
-		if(delay > 0.45f) {
-			actual.move();
-			delay = 0;
-		}
-		if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && !map.leftCollision(actual))
-			actual.moveLeft();
-		if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !map.rightCollision(actual))
-			actual.moveRight();
-		if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-			map.canRotate(actual);
-		}
-		
-		if(map.isAtTheEnd(actual)) {
-			map.addPiece(actual);
-			createPiece();
-		}else {
-			if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-				actual.move();
-		}
-		//Pezzo attuale
-		sh.begin(ShapeType.Filled);
-		sh.setColor(Color.BLACK);
-		sh.rect(map.getBorders()[0].getX(), map.getBorders()[0].getY(), map.getBorders()[0].getWidth(), map.getBorders()[0].getHeight());
-		sh.rect(map.getBorders()[1].getX(), map.getBorders()[1].getY(), map.getBorders()[1].getWidth(), map.getBorders()[1].getHeight());
-		sh.rect(map.getBorders()[2].getX(), map.getBorders()[2].getY(), map.getBorders()[2].getWidth(), map.getBorders()[2].getHeight());
-		sh.end();
-		sprite.begin();
-		//int i = 0;
-		for(Rectangle r : actual.getBlocks()) { 
-			//if(i!=0)
-				sprite.draw(actual.getTexture(), r.getX(), r.getY());
-			//else
-				//sh.setColor(Color.BLACK); //DEBUG TO LET US KNOW WHO IS THE FIRST BLOCK
-			//i++;
-		}
-		sprite.end();
-		for(int j=0; j<map.getMap().length; j++) {
-			for(int k=0; k<map.getMap()[j].length; k++) {
-				if(map.getMap()[j][k]!=null) {
-					sprite.begin();
-					sprite.draw(map.getMap()[j][k].getTexture(), map.getMap()[j][k].getX(), map.getMap()[j][k].getY());
-					sprite.end();
-				}
-				sh.begin(ShapeType.Filled);
-				sh.setColor(Color.BLACK);
-				sh.rect(300,0+20*j,200,1f);
-				sh.rect(300+20*k,0,1f,400);
-				sh.end();
-			}
-		}
-	}
-	
-	private void createPiece() {
-		Random r = new Random();
-		int tmp = r.nextInt(7);
-		switch(tmp) {
-		case 0:
-			actual = new PieceI("blue.png");
-			break;
-		case 1:
-			actual = new PieceLLeft("green.png");
-			break;
-		case 2:
-			actual = new PieceLRight("grey.png");
-			break;
-		case 3:
-			actual = new PieceS("yellow.png");
-			break;
-		case 4:
-			actual = new PieceT("red.png");
-			break;
-		case 5:
-			actual = new PieceZLeft("pink.png");
-			break;
-		case 6:
-			actual = new PieceZRight("violet.png");
-			break;
-		}
-	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		//TODO Poi ci pensiamo hahah
-	}
+    @Override
+    public void create() {
+        map = new Map();
+        graphicManager = new GraphicManager();
+        soundManager = new SoundManager();
+        nextPieces = new Queue<Piece>();
+        soundManager.playStart();
+        soundManager.playMusic();
+        createPiece();
+        delay = 0;
+        points = 0;
+        endDelay = 0;
+        blink = 0;
+        pause = false;
+        canSwap = true;
+        //Ci serve un playground di 400*200 i 90 e 10 sono per fare vedere meglio i bordi
+    }
+
+    @Override
+    public void render() {
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if (!pause) {
+            play();
+        } else {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                soundManager.playPause();
+                soundManager.playMusic();
+                pause = false;
+            }
+        }
+        graphicManager.drawBorders(map, points);
+        graphicManager.drawPieces(actual, hold, nextPieces, endDelay);
+        graphicManager.drawMap(map,blink);
+        graphicManager.restoreTransparency();
+    }
+
+    public void swapWithHold() {
+        if (hold == null) {
+            hold = actual;
+            hold.goInHold();
+            createPiece();
+        } else {
+            Piece tmp = actual;
+            actual = hold;
+            hold = tmp;
+            hold.goInHold();
+            actual.goToStart();
+        }
+        canSwap = false;
+    }
+
+    public void play() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && !map.leftCollision(actual))
+            actual.moveLeft();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !map.rightCollision(actual))
+            actual.moveRight();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && !map.isAtTheEnd(actual)) {
+            if (map.canRotate(actual))
+                soundManager.playRotate();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.V) && canSwap) {
+            swapWithHold();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            soundManager.stopMusic();
+            soundManager.playPause();
+            pause = true;
+        }
+
+        points += map.petrisControl(); //TODO: Non funziona il passaggio per parametri, tha fuck?
+        if(!map.rowsToDelete.isEmpty()){
+            blink+=Gdx.graphics.getDeltaTime();
+        }
+        if(blink >= 1.0){
+            map.rowsToDelete.clear();
+            blink = 0;
+        }
+        if (map.isAtTheEnd(actual) && started) {
+            soundManager.stopMusic();
+            soundManager.playGameover();
+            pause = true;
+        }
+
+        delay += Gdx.graphics.getDeltaTime();
+        if (delay > 0.45f && !map.isAtTheEnd(actual)) {
+            actual.move();
+            delay = 0;
+            started = false;
+        }
+
+        if (map.isAtTheEnd(actual)) {
+            endDelay += Gdx.graphics.getDeltaTime();
+            if (endDelay > 0.6) {
+                map.addPiece(actual);
+                points += 100;
+                createPiece();
+                endDelay = 0;
+                graphicManager.restoreTransparency();
+            }
+        } else {
+            endDelay = 0;
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                actual.move();
+                points += 10;
+            }
+        }
+    }
+
+    private Piece chooseAPiece() {
+        Random r = new Random();
+        int tmp = r.nextInt(7);
+        switch (tmp) {
+            case 0:
+                return new PieceI("blue.png");
+            case 1:
+                return new PieceLLeft("green.png");
+            case 2:
+                return new PieceLRight("grey.png");
+            case 3:
+                return new PieceS("yellow.png");
+            case 4:
+                return new PieceT("red.png");
+            case 5:
+                return (new PieceZLeft("pink.png"));
+            case 6:
+                return (new PieceZRight("violet.png"));
+        }
+        return new PieceI("blue.png");
+    }
+
+    private void createPiece() {
+        started = true;
+        nextPieces.addLast(chooseAPiece());
+        actual = nextPieces.first();
+        nextPieces.removeFirst();
+        canSwap = true;
+        while (nextPieces.size < 4)
+            nextPieces.addLast(chooseAPiece());
+    }
+
+    @Override
+    public void dispose() {
+        soundManager.dispose();
+        //TODO Poi ci pensiamo hahah
+    }
 }
