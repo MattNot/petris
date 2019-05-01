@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Queue;
 import com.map.Map;
 import com.petris.pieces.Piece;
@@ -44,7 +45,7 @@ public class GraphicManager {
         parameter.flip = true;
         sprite.begin();
         font = generator.generateFont(parameter);
-        font.draw(sprite, Integer.toString(points), 800/2, 10);
+        font.draw(sprite, Integer.toString(points), 0, 10f,0,Integer.toString(points).length(),800,Align.center, false, null);
         sprite.end();
         font.dispose();
     }
