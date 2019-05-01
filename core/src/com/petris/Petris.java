@@ -97,7 +97,7 @@ public class Petris extends ApplicationAdapter {
             pause = true;
         }
 
-        map.petrisControl(points); //TODO: Non funziona il passaggio per parametri, tha fuck?
+        points += map.petrisControl(); //TODO: Non funziona il passaggio per parametri, tha fuck?
         if(!map.rowsToDelete.isEmpty()){
             blink+=Gdx.graphics.getDeltaTime();
         }

@@ -107,7 +107,8 @@ public class Map {
         }
     }
 
-    public void petrisControl(Integer points) {
+    public int petrisControl() {
+    	int points = 0;
         for (int i = 0; i < map.length; ++i) {
             boolean petris = true;
             for (int j = 0; j < map[i].length; ++j)
@@ -116,14 +117,15 @@ public class Map {
                     break;
                 }
             if (petris) {
+            	points = points + 1;
                 rowsToDelete.add(i);
-                deleteRow(i--, points);
+                deleteRow(i--);
             }
         }
+        return points * 500;
     }
 
-    private void deleteRow(int riga, Integer points) {
-        points += 500;
+    private void deleteRow(int riga) {
         Block temp[][] = new Block[20][10];
         for (int i = map.length - 1; i > riga; --i)
             temp[i] = map[i].clone();
