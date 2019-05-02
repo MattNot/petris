@@ -16,10 +16,6 @@ public class Map {
     public final static int START_X = 290;
     public final static int FINISH_X = 500;
     public final static int FINISH_Y = 450;
-    public final static int START_HOLD_X = 100;
-    public final static int FINISH_HOLD_X = 200;
-    public final static int START_HOLD_Y = 50;
-    public final static int FINISH_HOLD_Y = 150;
 
     public Map() {
         rowsToDelete = new ArrayList<Integer>();

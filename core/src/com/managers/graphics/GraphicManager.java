@@ -3,7 +3,9 @@ package com.managers.graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -11,9 +13,16 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Queue;
 import com.map.Map;
-import com.petris.pieces.Piece;
+import com.petris.pieces.*;
 
 public class GraphicManager {
+    public final static int START_HOLD_X = 100;
+    public final static int FINISH_HOLD_X = 200;
+    public final static int START_HOLD_Y = 50;
+    public final static int FINISH_HOLD_Y = 150;
+
+    Texture background;
+    Sprite back;
     OrthographicCamera camera;
     ShapeRenderer sh;
     FreeTypeFontGenerator generator;
@@ -25,12 +34,21 @@ public class GraphicManager {
         camera = new OrthographicCamera(800, 500);
         sh = new ShapeRenderer();
         sprite = new SpriteBatch();
+        background = new Texture(Gdx.files.internal("background.png"));
+        back = new Sprite(background);
+        back.flip(false, true);
         generator = new FreeTypeFontGenerator(Gdx.files.internal("Minecraft.ttf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         font = new BitmapFont();
         camera.setToOrtho(true, 800, 500);
         sprite.setProjectionMatrix(camera.combined);
         sh.setProjectionMatrix(camera.combined);
+    }
+
+    public void drawBackground() {
+        sprite.begin();
+        sprite.draw(back, 0, 0, 800, 500);
+        sprite.end();
     }
 
     public void drawBorders(Map map, Integer points) {
@@ -45,7 +63,8 @@ public class GraphicManager {
         parameter.flip = true;
         sprite.begin();
         font = generator.generateFont(parameter);
-        font.draw(sprite, Integer.toString(points), 0, 10f,0,Integer.toString(points).length(),800,Align.center, false, null);
+        font.draw(sprite, Integer.toString(points), 0, 10f, 0, Integer.toString(points).length(), 800, Align.center,
+                false, null);
         sprite.end();
         font.dispose();
     }
@@ -72,7 +91,13 @@ public class GraphicManager {
         int i = 0;
         for (Piece p : nextPieces) {
             for (Rectangle r : p.getBlocks()) {
-                sprite.draw(p.getTexture(), r.getX() + 200, r.getY() + (i * 85));
+                if (p instanceof PieceI) {
+                    sprite.draw(p.getTexture(), r.getX() + 200, r.getY() + 10 + (i * 85));
+                } else if (p instanceof PieceS) {
+                    sprite.draw(p.getTexture(), r.getX() + 180, r.getY() + (i * 85));
+                } else {
+                    sprite.draw(p.getTexture(), r.getX() + 190, r.getY() + (i * 85));
+                }
             }
             i++;
         }
@@ -83,7 +108,16 @@ public class GraphicManager {
         sprite.begin();
         if (hold != null) {
             for (Rectangle r : hold.getBlocks()) {
-                sprite.draw(hold.getTexture(), r.getX(), r.getY());
+                if (hold instanceof PieceI)
+                    sprite.draw(hold.getTexture(), r.getX() + 10, r.getY() + 10);
+                else if (hold instanceof PieceS)
+                    sprite.draw(hold.getTexture(), r.getX() - 10, r.getY());
+                else if (hold instanceof PieceT)
+                    sprite.draw(hold.getTexture(), r.getX() - 20, r.getY());
+                else if (hold instanceof PieceZRight || hold instanceof PieceZLeft)
+                    sprite.draw(hold.getTexture(), r.getX() - 20, r.getY());
+                else
+                    sprite.draw(hold.getTexture(), r.getX(), r.getY());
             }
         }
         sprite.end();

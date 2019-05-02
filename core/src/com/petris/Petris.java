@@ -58,9 +58,10 @@ public class Petris extends ApplicationAdapter {
                 pause = false;
             }
         }
+        graphicManager.drawBackground();
         graphicManager.drawBorders(map, points);
         graphicManager.drawPieces(actual, hold, nextPieces, endDelay);
-        graphicManager.drawMap(map,blink);
+        graphicManager.drawMap(map, blink);
         graphicManager.restoreTransparency();
     }
 
@@ -98,10 +99,10 @@ public class Petris extends ApplicationAdapter {
         }
 
         points += map.petrisControl(); //TODO: Non funziona il passaggio per parametri, tha fuck?
-        if(!map.rowsToDelete.isEmpty()){
-            blink+=Gdx.graphics.getDeltaTime();
+        if (!map.rowsToDelete.isEmpty()) {
+            blink += Gdx.graphics.getDeltaTime();
         }
-        if(blink >= 1.0){
+        if (blink >= 1.0) {
             map.rowsToDelete.clear();
             blink = 0;
         }
