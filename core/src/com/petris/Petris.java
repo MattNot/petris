@@ -122,6 +122,9 @@ public class Petris extends ApplicationAdapter {
         if (map.isAtTheEnd(actual)) {
             endDelay += Gdx.graphics.getDeltaTime();
             if (endDelay > 0.6) {
+            	while(!map.canAdd(actual)) {
+            		actual.moveUp();
+            	}
                 map.addPiece(actual);
                 points += 100;
                 createPiece();
@@ -135,6 +138,8 @@ public class Petris extends ApplicationAdapter {
                 points += 10;
             }
         }
+        
+        this.setDifficulty();
     }
 
     private Piece chooseAPiece() {
@@ -167,6 +172,10 @@ public class Petris extends ApplicationAdapter {
         canSwap = true;
         while (nextPieces.size < 4)
             nextPieces.addLast(chooseAPiece());
+    }
+    
+    private void setDifficulty() {
+    	actual.setVelocity(points/5000 + 1);
     }
 
     @Override
