@@ -10,7 +10,6 @@ public abstract class Piece {
     private int state;
     protected Rectangle[] blocks;
     private Texture texture;
-    private int velocity;
 
     public Piece(Piece p) {
         this.state = p.state;
@@ -32,10 +31,6 @@ public abstract class Piece {
     public Texture getTexture() {
         return texture;
     }
-    
-    public void setVelocity(int v) {
-    	velocity = v;
-    }
 
     public abstract void rotate();
 
@@ -46,15 +41,10 @@ public abstract class Piece {
      * TODO
      * @argument {Vector2[]} v - Non so se è il miglior modo per ricevere le coordinate di tutti i blocchi vicini
      */
-
-    public void moveUp() {
-    	for (Rectangle i : blocks)
-            i.y -= BLOCK_HEIGHT;
-    }
     
     public void move() {
         for (Rectangle i : blocks)
-            i.y += BLOCK_HEIGHT*velocity;
+            i.y += BLOCK_HEIGHT;
     }
 
     public boolean moveRight() {

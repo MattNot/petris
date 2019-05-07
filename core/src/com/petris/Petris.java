@@ -19,6 +19,8 @@ public class Petris extends ApplicationAdapter {
     Piece hold;
     Queue<Piece> nextPieces;
     Map map;
+    int stage;
+    float difficulty;
     float delay;
     float endDelay;
     float blink;
@@ -36,6 +38,8 @@ public class Petris extends ApplicationAdapter {
         soundManager.playStart();
         soundManager.playMusic();
         createPiece();
+        stage = 1;
+        difficulty = 0.45f;
         delay = 0;
         points = 0;
         endDelay = 0;
@@ -113,7 +117,7 @@ public class Petris extends ApplicationAdapter {
         }
 
         delay += Gdx.graphics.getDeltaTime();
-        if (delay > 0.45f && !map.isAtTheEnd(actual)) {
+        if (delay > difficulty && !map.isAtTheEnd(actual)) {
             actual.move();
             delay = 0;
             started = false;
@@ -122,9 +126,6 @@ public class Petris extends ApplicationAdapter {
         if (map.isAtTheEnd(actual)) {
             endDelay += Gdx.graphics.getDeltaTime();
             if (endDelay > 0.6) {
-            	while(!map.canAdd(actual)) {
-            		actual.moveUp();
-            	}
                 map.addPiece(actual);
                 points += 100;
                 createPiece();
@@ -175,7 +176,11 @@ public class Petris extends ApplicationAdapter {
     }
     
     private void setDifficulty() {
-    	actual.setVelocity(points/5000 + 1);
+    	if(points > 5000*stage) {
+    		++stage;
+    		difficulty -= 0.1f;
+    		System.out.println("idsv");
+    	}
     }
 
     @Override

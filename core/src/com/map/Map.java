@@ -95,19 +95,6 @@ public class Map {
         }
         return false;
     }
-    
-    public boolean canAdd(Piece p) {
-    	try {
-    		for (Rectangle i : p.getBlocks()) {
-                map[(int) (i.getY() - Map.START_Y) / Piece.BLOCK_HEIGHT][(int) (i.getX() - Map.START_X) / Piece.BLOCK_HEIGHT] = 
-                		map[(int) (i.getY() - Map.START_Y) / Piece.BLOCK_HEIGHT][(int) (i.getX() - Map.START_X) / Piece.BLOCK_HEIGHT];
-            }
-    		return true;
-    	}
-    	catch(ArrayIndexOutOfBoundsException e) {
-    		return false;
-    	}
-    }
 
     public void addPiece(Piece p) {
 		for (Rectangle i : p.getBlocks()) {
