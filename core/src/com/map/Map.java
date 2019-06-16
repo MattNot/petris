@@ -38,22 +38,24 @@ public class Map {
         }
         p.rotate();
         for (Rectangle i : p.getBlocks()) {
-            if (i.overlaps(borders[0]) || i.getX() <= borders[0].getX()) {
-                p.moveRight();
-            } else if (i.overlaps(borders[1]) || i.getX() >= borders[1].getX() + 10) {
-                p.moveLeft();
-                if (p instanceof PieceI) {
-                    p.moveLeft();
-                }
-            } else if (map[(int) (i.getY() - Map.START_Y) / Piece.BLOCK_HEIGHT][((int) (i.getX() - Map.START_X)
-                    / Piece.BLOCK_HEIGHT)] != null) {
-                for (int j = 0; j < 4; j++) {
-                    p.getBlocks()[j].x = e[j].x;
-                    p.getBlocks()[j].y = e[j].y;
-                }
-                p.setState(p.getState() - 1);
-                break;
-            }
+        	try {
+	            if (i.overlaps(borders[0]) || i.getX() <= borders[0].getX()) {
+	                p.moveRight();
+	            } else if (i.overlaps(borders[1]) || i.getX() >= borders[1].getX() + 10) {
+	                p.moveLeft();
+	                if (p instanceof PieceI) {
+	                    p.moveLeft();
+	                }
+	            } else if (map[(int) (i.getY() - Map.START_Y) / Piece.BLOCK_HEIGHT][((int) (i.getX() - Map.START_X)
+	                    / Piece.BLOCK_HEIGHT)] != null) {
+	                for (int j = 0; j < 4; j++) {
+	                    p.getBlocks()[j].x = e[j].x;
+	                    p.getBlocks()[j].y = e[j].y;
+	                }
+	                p.setState(p.getState() - 1);
+	                break;
+	            }
+        	} catch (ArrayIndexOutOfBoundsException a) {}
         }
         return true;
     }

@@ -62,6 +62,8 @@ public class Petris extends ApplicationAdapter {
                 pause = false;
             }
         }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+        	Gdx.app.exit();
         graphicManager.drawBackground();
         graphicManager.drawBorders(map, points);
         graphicManager.drawPieces(actual, hold, nextPieces, endDelay);
