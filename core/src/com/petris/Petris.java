@@ -1,20 +1,29 @@
 package com.petris;
 
+import java.util.Random;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Queue;
 import com.managers.graphics.GraphicManager;
-import com.map.Map;
-import com.petris.pieces.*;
+import com.managers.record.RecordManager;
 import com.managers.sound.SoundManager;
-
-import java.util.Random;
+import com.map.Map;
+import com.petris.pieces.Piece;
+import com.petris.pieces.PieceI;
+import com.petris.pieces.PieceLLeft;
+import com.petris.pieces.PieceLRight;
+import com.petris.pieces.PieceS;
+import com.petris.pieces.PieceT;
+import com.petris.pieces.PieceZLeft;
+import com.petris.pieces.PieceZRight;
 
 public class Petris extends ApplicationAdapter {
     GraphicManager graphicManager;
     SoundManager soundManager;
+    RecordManager recordManager;
     Piece actual;
     Piece hold;
     Queue<Piece> nextPieces;
@@ -34,6 +43,7 @@ public class Petris extends ApplicationAdapter {
         map = new Map();
         graphicManager = new GraphicManager();
         soundManager = new SoundManager();
+        recordManager = new RecordManager();
         nextPieces = new Queue<Piece>();
         soundManager.playStart();
         soundManager.playMusic();
@@ -62,11 +72,15 @@ public class Petris extends ApplicationAdapter {
                 pause = false;
             }
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
         	Gdx.app.exit();
+        	recordManager.update(Integer.toString(points));
+        }
+        recordManager.changeHighScore(points);
         graphicManager.drawBackground();
         graphicManager.drawBorders(map);
         graphicManager.drawPoints(points);
+        graphicManager.drawRecord(recordManager.getHighUser(), recordManager.getPoints(Integer.toString(points)));
         graphicManager.drawPieces(actual, hold, nextPieces, endDelay);
         graphicManager.drawMap(map, blink);
         graphicManager.restoreTransparency();
