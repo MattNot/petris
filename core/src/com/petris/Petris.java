@@ -73,8 +73,8 @@ public class Petris extends ApplicationAdapter {
             }
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-        	Gdx.app.exit();
         	recordManager.update(Integer.toString(points));
+        	Gdx.app.exit();
         }
         recordManager.changeHighScore(points);
         graphicManager.drawBackground();
