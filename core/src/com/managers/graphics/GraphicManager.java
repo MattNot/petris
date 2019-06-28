@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Queue;
 import com.map.Map;
+import com.petris.Petris;
 import com.petris.pieces.*;
 
 public class GraphicManager {
@@ -22,6 +23,8 @@ public class GraphicManager {
 	public final static int FINISH_HOLD_Y = 150;
 
 	Texture background;
+	Texture playMenu;
+	Texture quitMenu;
 	Sprite back;
 	OrthographicCamera camera;
 	ShapeRenderer sh;
@@ -31,6 +34,8 @@ public class GraphicManager {
 	SpriteBatch sprite;
 
 	public GraphicManager() {
+		playMenu = new Texture(Gdx.files.internal("playMenu.png"));
+		quitMenu = new Texture(Gdx.files.internal("quitMenu.png"));
 		camera = new OrthographicCamera(800, 500);
 		sh = new ShapeRenderer();
 		sprite = new SpriteBatch();
@@ -43,6 +48,16 @@ public class GraphicManager {
 		camera.setToOrtho(true, 800, 500);
 		sprite.setProjectionMatrix(camera.combined);
 		sh.setProjectionMatrix(camera.combined);
+	}
+	
+	public void drawMenu(int status) {
+		sprite.begin();
+		//sprite.draw(texture, x, y, width, height, srcX, srcY, srcWidth, srcHeight, flipX, flipY);
+		if(status == Petris.PLAY_STATUS)
+			sprite.draw(playMenu, 0, 0, 800, 500, 0, 0, playMenu.getWidth(), playMenu.getHeight(), false, true);
+		else if(status == Petris.QUIT_STATUS)
+			sprite.draw(quitMenu, 0, 0, 800, 500, 0, 0, playMenu.getWidth(), playMenu.getHeight(), false, true);
+		sprite.end();
 	}
 
 	public void drawBackground() {
