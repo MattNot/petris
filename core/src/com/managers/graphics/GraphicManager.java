@@ -32,6 +32,15 @@ public class GraphicManager {
 	FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 	BitmapFont font;
 	SpriteBatch sprite;
+	
+	public void dispose() {
+		background.dispose();
+		playMenu.dispose();
+		quitMenu.dispose();
+		sh.dispose();
+		generator.dispose();
+		sprite.dispose();
+	}
 
 	public GraphicManager() {
 		playMenu = new Texture(Gdx.files.internal("playMenu.png"));

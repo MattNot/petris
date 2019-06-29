@@ -4,6 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 
+/*
+ * Abstract class that rappresent a piece.
+ * Every component of the piece is a Rectangle.
+ */
 public abstract class Piece {
 	
     public static final int BLOCK_HEIGHT = 20;

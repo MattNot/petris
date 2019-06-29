@@ -21,6 +21,13 @@ import com.petris.pieces.PieceZRight;
 
 public class Petris extends ApplicationAdapter {
 	
+	/*
+	 * This is the main class
+	 * At the start the create() method is called
+	 * Every frame the render() method is called
+	 * At the end the dispose() method is called
+	 */
+	
 	public final static int PLAY_STATUS = 1;
 	public final static int QUIT_STATUS = 2;
 	
@@ -83,6 +90,7 @@ public class Petris extends ApplicationAdapter {
         }
     }
     
+    //Reset the game
     private void reset() {
     	map = new Map();
     	createPiece();
@@ -117,6 +125,7 @@ public class Petris extends ApplicationAdapter {
 		}
     }
 
+    //Change the piece with the piece in hold if present, otherwhise it just go to the next
     public void swapWithHold() {
         if (hold == null) {
             hold = actual;
@@ -166,6 +175,7 @@ public class Petris extends ApplicationAdapter {
             started = false;
         }
         
+        //Died
         if (map.isAtTheEnd(actual) && started) {
         	recordManager.update(Integer.toString(points));
             soundManager.stopMusic();
@@ -235,6 +245,6 @@ public class Petris extends ApplicationAdapter {
     @Override
     public void dispose() {
         soundManager.dispose();
-        //TODO Poi ci pensiamo hahah
+        graphicManager.dispose();
     }
 }
