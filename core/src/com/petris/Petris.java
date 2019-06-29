@@ -165,8 +165,6 @@ public class Petris extends ApplicationAdapter {
             delay = 0;
             started = false;
         }
-        else if(delay*2 > difficulty)
-        	started = false;
         
         if (map.isAtTheEnd(actual) && started) {
         	recordManager.update(Integer.toString(points));
@@ -186,7 +184,7 @@ public class Petris extends ApplicationAdapter {
             }
         } else {
             endDelay = 0;
-            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && !started) {
                 actual.move();
                 points += 10;
             }
