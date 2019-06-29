@@ -45,25 +45,11 @@ public class Petris extends ApplicationAdapter {
 
     @Override
     public void create() {
-        map = new Map();
         graphicManager = new GraphicManager();
         soundManager = new SoundManager();
         recordManager = new RecordManager();
         nextPieces = new Queue<Piece>();
-        soundManager.playStart();
-        soundManager.playMusic();
-        createPiece();
-        stage = 1;
-        status = Petris.PLAY_STATUS;
-        difficulty = 0.45f;
-        delay = 0;
-        points = 0;
-        endDelay = 0;
-        blink = 0;
-        pause = false;
-        menu = true;
-        canSwap = true;
-        //Ci serve un playground di 400*200 i 90 e 10 sono per fare vedere meglio i bordi
+        reset();
     }
 
     @Override
@@ -83,7 +69,8 @@ public class Petris extends ApplicationAdapter {
                 }
             }
             if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            	menu = true;
+            	soundManager.stopMusic();
+            	reset();
             }
             recordManager.changeHighScore(points);
             graphicManager.drawBackground();
@@ -96,6 +83,22 @@ public class Petris extends ApplicationAdapter {
         }
     }
     
+    private void reset() {
+    	map = new Map();
+    	createPiece();
+    	hold = null;
+        stage = 1;
+        status = Petris.PLAY_STATUS;
+        difficulty = 0.45f;
+        delay = 0;
+        points = 0;
+        endDelay = 0;
+        blink = 0;
+        pause = false;
+        menu = true;
+        canSwap = true;
+    }
+    
     private void menuManager() {
     	graphicManager.drawMenu(status);
     	if(status == Petris.PLAY_STATUS && (Gdx.input.isKeyJustPressed(Input.Keys.UP) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)))
@@ -106,7 +109,7 @@ public class Petris extends ApplicationAdapter {
 			Gdx.app.exit();
 		if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
 			if(status == Petris.PLAY_STATUS) {
-				//soundManager.restartBackground();
+				soundManager.playMusic();
 				menu = false;
 			}
 			else if(status == Petris.QUIT_STATUS)
@@ -147,7 +150,7 @@ public class Petris extends ApplicationAdapter {
             pause = true;
         }
 
-        points += map.petrisControl(); //TODO: Non funziona il passaggio per parametri, tha fuck?
+        points += map.petrisControl();
         if (!map.rowsToDelete.isEmpty()) {
             blink += Gdx.graphics.getDeltaTime();
         }
@@ -155,20 +158,21 @@ public class Petris extends ApplicationAdapter {
             map.rowsToDelete.clear();
             blink = 0;
         }
-        if (map.isAtTheEnd(actual) && started) {
-        	System.out.println(started);
-        	recordManager.update(Integer.toString(points));
-            soundManager.stopMusic();
-            soundManager.playGameover();
-            pause = true;
-        }
-
+        
         delay += Gdx.graphics.getDeltaTime();
         if (delay > difficulty && !map.isAtTheEnd(actual)) {
-        	System.out.println("ciao");
             actual.move();
             delay = 0;
             started = false;
+        }
+        else if(delay*2 > difficulty)
+        	started = false;
+        
+        if (map.isAtTheEnd(actual) && started) {
+        	recordManager.update(Integer.toString(points));
+            soundManager.stopMusic();
+            soundManager.playGameover();
+            reset();
         }
 
         if (map.isAtTheEnd(actual)) {

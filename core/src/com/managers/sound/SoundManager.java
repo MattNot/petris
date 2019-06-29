@@ -14,7 +14,6 @@ public class SoundManager {
     public SoundManager() {
         gameover = Gdx.audio.newSound(Gdx.files.internal("gameover.mp3"));
         music = Gdx.audio.newSound(Gdx.files.internal("music.mp3"));
-        music.loop(0.2f);
         pause = Gdx.audio.newSound(Gdx.files.internal("pause.mp3"));
         rotate = Gdx.audio.newSound(Gdx.files.internal("rotate.mp3"));
         start = Gdx.audio.newSound(Gdx.files.internal("start.mp3"));
@@ -25,7 +24,7 @@ public class SoundManager {
     }
 
     public void playMusic() {
-        music.play(0.2f);
+        music.loop(0.2f);
     }
 
     public void stopMusic() {
