@@ -229,7 +229,6 @@ public class Petris extends ApplicationAdapter {
     	if(points > 5000*stage) {
     		++stage;
     		difficulty -= 0.1f;
-    		System.out.println("idsv");
     	}
     }
 

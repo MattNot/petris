@@ -93,15 +93,6 @@ public class GraphicManager {
 		parameter.color = Color.GOLD;
 		font = generator.generateFont(parameter);
 		font.draw(sprite, "HIGHSCORE", 70, 375);
-//		String whoToPrint = System.getenv("pandoras_HighUser");
-//		String pointsToPrint = System.getenv("pandoras_Highscore");
-//		if (whoToPrint == null) {
-//			font.draw(sprite, "YOU", 100, 420);
-//			font.draw(sprite, "0", 100, 450);
-//		} else {
-//			font.draw(sprite, whoToPrint.toUpperCase(), 100, 420);
-//			font.draw(sprite, pointsToPrint, 120, 450);
-//		}
 		font.draw(sprite, name, 100, 420);
 		font.draw(sprite, points, 100, 450);
 		sprite.end();

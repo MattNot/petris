@@ -37,10 +37,6 @@ public abstract class Piece {
     public abstract void goInHold();
 
     public abstract void goToStart();
-    /*
-     * TODO
-     * @argument {Vector2[]} v - Non so se è il miglior modo per ricevere le coordinate di tutti i blocchi vicini
-     */
     
     public void move() {
         for (Rectangle i : blocks)
